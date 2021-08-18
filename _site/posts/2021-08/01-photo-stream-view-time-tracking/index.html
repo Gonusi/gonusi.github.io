@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <link href="/css/main.css" rel="stylesheet">
+    <link href="/css/prism-theme-retro.css" rel="stylesheet">
+    <title>Track view duration of a fake social network feed using intersection observer · TODO</title>
+  </head>
+  <body>
+  <h1>Track view duration of a fake social network feed using intersection observer
+    <h2>What we're gonna Build</h2>
+<p>** Weekly challenge is for experiments, I reserve up to 7 hours from my week for those, including writing the blog. I've found that if I don't get myself a limit, I'll get obsessed with this stuff and never even post it, never getting it &quot;perfect&quot;. Stupid animal brain it is. **</p>
+<p>Social networks and websites often have feeds where you scroll through content items. It's then common sense they would time your view of each piece, recording the exact duration you spent viewing it. This would greatly help in serving even more similarly engaging, intelligence-stimulating content, because that's what we like to see, right?</p>
+<p>Let's build a feed of nice images and measure ourselves to see how the whole tracking thing can be built easily, and how the results look, real time.</p>
+<h2>The plan</h2>
+<p>Nothing takes away the fun better than a good, detailed plan. Yet, practice shows it's at least OK to have a loose one, even for fun things. Let's name a few components we'll need:</p>
+<pre><code>- ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes;
+- PhotoFeed - assembles a list of nice photos, and passes them down using props to any component it is supplied;
+- Dashboard - displays list of most popular content, and view duration
+- ViewDurationTrackingController - listens for callbacks with view duration for all items, can pass data to another component (dashboard)
+</code></pre>
+<p>Let's build the thing, bottom-up, using React this time.</p>
+<h2>1. ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes</h2>
+<p>I use mobile devices to browse social networks. On instagram, when looking at a photo, I sometimes scroll it out of the viewport so my fingers don't obstruct the view. So, I'll say that when <strong>85% of an element is in the viewport, we'll consider it &quot;being viewed&quot;</strong>.</p>
+<p><em>Obviously this is greatly simplified, and there is probably a whole branch of analytics just for getting the various &quot;in view&quot; factors right - but 85% is gonna work fine for our 7 hours of alloted time :)</em></p>
+<p>Let's explore the components responsibilities in more detail:</p>
+<ul>
+<li>render children in a div;</li>
+<li>when 85% enters viewport, save the <code>lastEntryDate</code> in state;</li>
+<li>when 85% leaves the viewport, calculate view duration as difference between <code>Date.now()</code> and <code>lastEntryDate</code></li>
+<li>call callback passed from parent as a prop with view view duration.</li>
+</ul>
+<p>Simple stuff. Yet I found testing it is not possible using my <a href="https://jestjs.io/">Jest</a> / <a href="https://testing-library.com/docs/react-testing-library/intro/">React testing library</a> / <a href="https://github.com/jsdom/jsdom">jsdom</a> setup, because <em>jsdom does not support real layout, making us unable to test logic based on scroll position</em>.</p>
+<p>Fortunately, we now have <a href="https://www.cypress.io/">Cypress</a> which renders tests in a real browser. Lately, it can even render react components for unit testing without having any kind of &quot;app&quot;. I'll make sure to write about it later.</p>
+<!-- ```js
+// JS | Cypress tests 
+import React from "react";
+import { mount } from "@cypress/react";
+import ViewDurationTracker from "./_ViewDurationTracker";
+
+beforeEach(() => {
+	cy.viewport(320, 640);
+});
+
+it("renders children inside a div", () => {
+	mount(<TimedViewContainer>I am a single child</TimedViewContainer>);
+	cy.get("[data-cy=TimedViewContainer]").contains("I am a single child");
+});
+
+it("calls callback with correct view duration", () => {
+	const callback = cy.stub().as("callback");
+	mount(
+		<div style={{ paddingTop: 10000 }}>
+			<TimedViewContainer onViewDurationMsChange={callback} />
+		</div>
+	);
+
+	cy.scrollTo("bottom");
+	// Note: should manipulate date here instead of waiting, but it's a bit out of scope here I think
+	cy.wait(100);
+	cy.scrollTo("top");
+
+	cy.get("@callback").should(
+		"have.been.calledWithMatch",
+		Cypress.sinon.match.number
+			.and(Cypress.sinon.match((x) => x > 100, "> 100"))
+			// Some time is wasted on scrollTo commands, so accept up to 150ms instead of exactly 100ms
+			.and(Cypress.sinon.match((x) => x < 150, "< 150"))
+	);
+});
+// end JS | Cypress tests 
+``` -->
+<iframe src="https://codesandbox.io/embed/adoring-aryabhata-zxgi7?fontsize=14&hidenavigation=1&module=%2Fsrc%2Fcomponents%2FViewDurationTracker.jsx&theme=dark&view=editor"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="adoring-aryabhata-zxgi7"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+<p>The first test is obvious. The second test does a few things:</p>
+<ul>
+<li>renders the <code>&lt;ViewDurationTracker/&gt;</code> hidden from the view by means of large top padding of a parent;</li>
+<li>scrolls down so the component to simulate it &quot;being viewed&quot;;</li>
+<li>waits a 100ms to simulate a user viewing it;</li>
+<li>scrolls up so the component is out of view again;</li>
+<li>checks if the component has called callback and a number between 100ms and 150ms as the argument;</li>
+</ul>
+<p>Not ideal, but not bad. To make it better, we could:</p>
+<ul>
+<li>mess with mocking the Date.now() / timers so the test does not actually take 100ms+;</li>
+<li>scrolling, logic and stuff takes up some time and, for a 100ms view, component reports around 110 - 130ms view duration;</li>
+</ul>
+<p>Not worth it right now, and we don't have enough time. After the tests, writing the component was easy, here it is.</p>
+<p>The component itself is pretty simple. We're using the <i><a href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">intersection observer</a></i> API, built specifically for the purpose of knowing when an element. Expectedly, the stuff works as expected :)</p>
+<p>The only issue I've had with the observer API, is that the intersection callback fires immediatelly after rendering the component, even if the component is immediatelly hidden from the viewport by a large top padding on the parent component.</p>
+<p>At first I thought this was my mistake, or an issue with how React renders stuff, or maybe how styles are applied...as in the component is visible for, say, a few milliseconds, and only then gets pushed down and out of the viewport by the parent's top padding. But it seems this is expected behaviour.</p>
+<p>Other than that, there's potential for the classical react functional component stale state problems (see code comment) - we avoid these it by using the reducer to manipulate state, all in one place.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// JS | React </span><br><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> useEffect<span class="token punctuation">,</span> useRef<span class="token punctuation">,</span> useReducer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"react"</span><span class="token punctuation">;</span><br><br><span class="token keyword">const</span> initialState <span class="token operator">=</span> <span class="token punctuation">{</span> lastEntryTime<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> viewDuration<span class="token operator">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">;</span><br><br><span class="token comment">/* We have state dependent on other state item, with the change being called<br>in a callback function. This is a classic recipe for stale state problems in <br>react functional components due to function closures.  Let's keep all the <br>logic in a separate reducer, and only dispatch actions from the callback, <br>instead of manipulating state directly. */</span><br><span class="token keyword">const</span> <span class="token function-variable function">reducer</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">state<span class="token punctuation">,</span> action</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>	<span class="token keyword">switch</span> <span class="token punctuation">(</span>action<span class="token punctuation">.</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>		<span class="token keyword">case</span> <span class="token string">"enterViewport"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>			<span class="token keyword">return</span> <span class="token punctuation">{</span> <span class="token operator">...</span>state<span class="token punctuation">,</span> lastEntryTime<span class="token operator">:</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">;</span><br>		<span class="token punctuation">}</span><br>		<span class="token keyword">case</span> <span class="token string">"leaveViewport"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>			<span class="token keyword">return</span> <span class="token punctuation">{</span><br>				<span class="token operator">...</span>state<span class="token punctuation">,</span><br>				viewDuration<span class="token operator">:</span> state<span class="token punctuation">.</span>lastEntryTime<br>					<span class="token operator">?</span> state<span class="token punctuation">.</span>viewDuration <span class="token operator">+</span> <span class="token punctuation">(</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> state<span class="token punctuation">.</span>lastEntryTime<span class="token punctuation">)</span><br>					<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span><br>			<span class="token punctuation">}</span><span class="token punctuation">;</span><br>		<span class="token punctuation">}</span><br>		<span class="token keyword">default</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>			<span class="token keyword">return</span> state<span class="token punctuation">;</span><br>		<span class="token punctuation">}</span><br>	<span class="token punctuation">}</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span><br><br><span class="token keyword">const</span> <span class="token function-variable function">ViewDurationTracker</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children<span class="token punctuation">,</span> onViewDurationMsChange <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>	<span class="token keyword">const</span> <span class="token punctuation">[</span>state<span class="token punctuation">,</span> dispatch<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useReducer</span><span class="token punctuation">(</span>reducer<span class="token punctuation">,</span> initialState<span class="token punctuation">)</span><span class="token punctuation">;</span><br>	<span class="token keyword">const</span> elementRef <span class="token operator">=</span> <span class="token function">useRef</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>	<span class="token keyword">const</span> <span class="token function-variable function">intersectionCallback</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">entries</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>		entries<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">entry</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>			<span class="token keyword">if</span> <span class="token punctuation">(</span>entry<span class="token punctuation">.</span>isIntersecting<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>				<span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">"enterViewport"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>			<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span><br>				<span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">"leaveViewport"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>			<span class="token punctuation">}</span><br>		<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>	<span class="token punctuation">}</span><span class="token punctuation">;</span><br><br>	<span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>		<span class="token keyword">let</span> observer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IntersectionObserver</span><span class="token punctuation">(</span>intersectionCallback<span class="token punctuation">,</span> <span class="token punctuation">{</span> threshold<span class="token operator">:</span> <span class="token number">0.85</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>		observer<span class="token punctuation">.</span><span class="token function">observe</span><span class="token punctuation">(</span>elementRef<span class="token punctuation">.</span>current<span class="token punctuation">)</span><span class="token punctuation">;</span><br>	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>	<span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>		<span class="token keyword">if</span> <span class="token punctuation">(</span>state<span class="token punctuation">.</span>viewDuration<span class="token punctuation">)</span> <span class="token punctuation">{</span><br>			onViewDurationMsChange<span class="token operator">?.</span><span class="token punctuation">(</span>state<span class="token punctuation">.</span>viewDuration<span class="token punctuation">)</span><span class="token punctuation">;</span><br>		<span class="token punctuation">}</span><br>	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>state<span class="token punctuation">.</span>viewDuration<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>	<span class="token keyword">return</span> <span class="token punctuation">(</span><br>		<span class="token operator">&lt;</span>div<br>			data<span class="token operator">-</span>cy<span class="token operator">=</span><span class="token string">"TimedViewContainer"</span><br>			ref<span class="token operator">=</span><span class="token punctuation">{</span>elementRef<span class="token punctuation">}</span><br>			<span class="token comment">// yup these are the styles for now</span><br>			style<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> border<span class="token operator">:</span> <span class="token string">"3px solid black"</span><span class="token punctuation">,</span> width<span class="token operator">:</span> <span class="token number">300</span><span class="token punctuation">,</span> height<span class="token operator">:</span> <span class="token number">300</span> <span class="token punctuation">}</span><span class="token punctuation">}</span><br>		<span class="token operator">></span><br>			<span class="token punctuation">{</span>children<span class="token punctuation">}</span><br>		<span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">></span><br>	<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span><br><br><span class="token keyword">export</span> <span class="token keyword">default</span> ViewDurationTracker<span class="token punctuation">;</span><br><span class="token comment">// end JS | React </span></code></pre>
+<p>And here's the component in action with some additional styles:</p>
+<iframe src="https://codesandbox.io/embed/adoring-aryabhata-zxgi7?fontsize=13&hidenavigation=1&initialpath=%2Fcomponent%2FViewDurationTracker&module=%2Fsrc%2Fcomponents%2FViewDurationTracker.jsx&theme=dark&view=preview"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="adoring-aryabhata-zxgi7"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+  </body>
+</html>
