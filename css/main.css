@@ -1,3 +1,28 @@
+body {
+  font-size: 18px;
+  line-height: 33px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  display: flex;
+  justify-content: center;
+}
 
+.wrapper {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 20px;
+}
+
+h1, h2, h3 {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+h1 {
+  line-height: 42px;
+  margin: 2em auto;
+}
+
+pre {
+  margin: 1em -80px !important;
+}
 
 /*# sourceMappingURL=main.css.map */
