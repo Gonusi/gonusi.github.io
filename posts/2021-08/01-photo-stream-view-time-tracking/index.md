@@ -1,5 +1,5 @@
 ---
-title: Track view duration of a fake social network feed using intersection observer
+title: Track view duration of fake social network feed items using intersection observer. Part 1.
 layout: layout.html
 tags: ["posts", "weekly challenge", "experiments", "cypress", "test driven development"]
 date: 2021-08-11
@@ -83,3 +83,5 @@ And here's the component in action with some additional styles:
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
+
+   Check it out, and next time, in Part 2 we'll write the PhotoFeed component. 

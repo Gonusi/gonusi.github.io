@@ -5,24 +5,26 @@ tags: ["posts", "today I learned", "daily"]
 date: 2021-08-18
 ---
 
-After finishing a NextJS app running in our docker service stack, I had to make it register to our service health dashboard, [Spring Boot Admin](https://github.com/codecentric/spring-boot-admin). It accepts a POST request. Other services run cronjobs, using _curl_ to post and report their health every other minute.
+After finishing a NextJS app running in our docker service stack, I had to make it register to our service health dashboard. It accepts a POST request with some data, which is out of the scope of this article. Anyway, all the other services were using  _curl_ to post and report their health every other minute.
 
 Here's the registration script. Nothing fancy, just using curl to make a POST request to an address defined in an environment variable:
 
 ```bash
-#Docker prefils this with container ID, which can be used to access this container in the network
+# Docker prefils this with container ID, which can be used to access 
+# this container in the network
 hostname=$(cat /etc/hostname)
 curl --header "Content-Type: application/json" \
      --request POST \
      --data '{"name": "some-service-name", "host": '"${hostname}"'}' \
-     https://dashboard-url.com
+     https://some-dashboard-url.com
 
 echo "cronjob has just finished executing register-to-dashboard script"
 ```
 
 Here's my `Dockerfile`:
 
-```Dockerfile
+```bash
+# Dockerfile
 FROM node:alpine AS runner
 ENV NODE_ENV production
 WORKDIR /
@@ -39,6 +41,7 @@ ENTRYPOINT [ "startup.sh" ]
 And here's the `startup.sh` file:
 
 ```bash
+# startup.sh
 # make sure errors stop execution
 set -e
 # start the cronjob
@@ -54,7 +57,9 @@ Putting a shell script, with **.sh extension removed** (weird I know) into one o
 
 You can run `crontab -l` to check the table specifying this behaviour:
 
-```
+```bash
+crontab -l
+
 # do daily/weekly/monthly maintenance
 # min	hour	day	    month	weekday	command
 */15	*	    *	    *	    *	    run-parts /etc/periodic/15min
@@ -62,18 +67,56 @@ You can run `crontab -l` to check the table specifying this behaviour:
 0	    2	    *	    *	    *	    run-parts /etc/periodic/daily
 0	    3	    *	    *	    6	    run-parts /etc/periodic/weekly
 0	    5	    1	    *	    *	    run-parts /etc/periodic/monthly
+
+# after our Dockerfile runs:
+# RUN echo "* * * * * run-parts /etc/periodic/1min" >> /etc/crontabs/root
+# we'll have a non-default line here:
+*	    *	    *	    *	    *	    run-parts /etc/periodic/1min
+
 ```
 
-What we do from the Dockerfile, is create a new directory, `1min` and schedule it's scripts to be ran every minute, expressed in the crontab syntax as `* * * * *` (see [CronTabGuru](https://crontab.guru/#*_*_*_*_*)).
+From the Dockerfile we create create a new directory, `1min` by `COPY`'ing a script there, and schedule the directories scripts to be ran every minute, expressed in the crontab syntax as seen above. See [CronTabGuru](https://crontab.guru/#*_*_*_*_*) about the syntax.
 
-To simulate the cronjob scripts run from, say the 15min dir, you can run `run-parts --test /etc/periodic/15min` - this will tell you which scripts will be run exactly. Alternatively, just run `run-parts /etc/periodic/15min` to actually try out running the scripts.
+## Running this stuff
 
-So, after creating the register-to-dashboard.sh and Dockerfile, from the same directory run `docker build . -t app` - this will build the docker image.
+When you have the `Dockerfile`, `register-to-dashboard.sh` files ready, from that same directory we can run this stuff and check out if all is working fine:
+```bash
+# build a docker image as instructed by the Dockerfile and tag it with "app"
+docker build . -t app
 
-Run `docker run app` to run it.
+# run a container using it
+docker run app
+# in a terminal, see a list of running containers
+docker ps
 
-Your cronjob should run every minute now. You can see the container logs by running `docker logs -f {yourContainerIdOrName}`. There you should see `cronjob has just finished executing register-to-dashboard script` message from our register-to-dashboard script appearing every minute. Btw, don't confuse docker image names with container names when watching the logs.
+# if you don't see it, you can check all containers, including stopped ones + get more info with --no-trunc
+docker ps -a --no-trunc
 
-To see a list of docker containers running, run `docker ps`. Run `docker ps -a` to include stopped containers. Run `docker ps -a --no-trunc` to see a bit more info.
+# find the id or name of your running container, and open a shell on it
+docker exec -it {your container id or name (without brackets)} /bin/sh
+
+# when shell opens, we can check out if our Dockerfile has configured the cronjob:
+crontab -l
+# ... look for line like this, if you see it - great
+# *	    *	    *	    *	    *	    run-parts /etc/periodic/1min
+
+# simulate running of scripts from our folder, the output will tell you which scripts will be run exactly
+run-parts --test /etc/periodic/1min
+
+# if you wish, you can actually run the scripts yourself by issuing same command as the cronjob does
+run-parts /etc/periodic/1min
+```
+
+Your cronjob should already be running every minute now. So, while we were checking all this stuff, some output should have appeared in the first terminal, started the docker container.
+
+To see logs of a container anytime, even if you closed that terminal:
+```bash
+docker logs {container id or name}
+```
+
+If you need to stop the container
+```bash
+docker stop {container id or name}
+```
 
 So much fun, these cronjobs.

@@ -7,6 +7,8 @@ date: 2021-01-04
 
 ##
 
+Is `love` a word which is a bit on the strong side, maybe? We'll see. Anyway.
+
 I have never _really_ used test driven development. When I tried, it got too clumsy, messy, I tried testing methods of my classes. Didn't really know what I was doing.
 
 The light came after attempting to TDD a functional component wish useState / useEffect hooks when they were released. No longer could I access state or internal methods of a class in my tests. Not without keeping them outside the component I then knew this is not how it was intended to be done.
