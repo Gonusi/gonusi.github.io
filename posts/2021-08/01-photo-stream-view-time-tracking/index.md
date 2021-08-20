@@ -17,10 +17,10 @@ Let's build a feed of nice images and measure ourselves to see how the whole tra
 
 Nothing takes away the fun better than a good, detailed plan. Yet, practice shows it's at least OK to have a loose one, even for fun things. Let's name a few components we'll need:
 
-    - ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes;
-    - PhotoFeed - assembles a list of nice photos, and passes them down using props to any component it is supplied;
-    - Dashboard - displays list of most popular content, and view duration
-    - ViewDurationTrackingController - listens for callbacks with view duration for all items, can pass data to another component (dashboard)
+- ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes;
+- PhotoFeed - assembles a list of nice photos, and passes them down using props to any component it is supplied;
+- Dashboard - displays list of most popular content, and view duration
+- ViewDurationTrackingController - listens for callbacks with view duration for all items, can pass data to another component (dashboard)
 
 Let's build the thing, bottom-up, using React this time.
 

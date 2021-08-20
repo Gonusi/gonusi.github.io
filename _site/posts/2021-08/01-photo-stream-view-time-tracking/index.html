@@ -5,23 +5,36 @@
 		<title>Track view duration of fake social network feed items using intersection observer. Part 1. · TODO</title>
 	</head>
 	<body>
-		<div class="creds">
-			<div class="logo">Kasparas Anusauskas</div>
-			<div class="about">A personal blog about dev experiments and things I've learned</div>
+		<div class="header">
+			<div class="blogInfo">
+				<div class="logo">Kasparas Anusauskas</div>
+				<div class="about">Personal development discoveries and experiments</div>
+			</div>
+			<nav class="nav">
+				<ul class="navList">
+					<li>
+						<a href="/"> Home </a>
+					</li>
+					<li>
+						<a href="/about">About</a>
+					</li>
+				</ul>
+			</nav>
 		</div>
-	  <div class="wrapper">
-      <h1>Track view duration of fake social network feed items using intersection observer. Part 1.</h1>
-      <h2>What we're gonna Build</h2>
+		<div class="wrapper">
+			<h1>Track view duration of fake social network feed items using intersection observer. Part 1.</h1>
+			<h2>What we're gonna Build</h2>
 <p>** Weekly challenge is for experiments, I reserve up to 7 hours from my week for those, including writing the blog. I've found that if I don't get myself a limit, I'll get obsessed with this stuff and never even post it, never getting it &quot;perfect&quot;. Stupid animal brain it is. **</p>
 <p>Social networks and websites often have feeds where you scroll through content items. It's then common sense they would time your view of each piece, recording the exact duration you spent viewing it. This would greatly help in serving even more similarly engaging, intelligence-stimulating content, because that's what we like to see, right?</p>
 <p>Let's build a feed of nice images and measure ourselves to see how the whole tracking thing can be built easily, and how the results look, real time.</p>
 <h2>The plan</h2>
 <p>Nothing takes away the fun better than a good, detailed plan. Yet, practice shows it's at least OK to have a loose one, even for fun things. Let's name a few components we'll need:</p>
-<pre><code>- ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes;
-- PhotoFeed - assembles a list of nice photos, and passes them down using props to any component it is supplied;
-- Dashboard - displays list of most popular content, and view duration
-- ViewDurationTrackingController - listens for callbacks with view duration for all items, can pass data to another component (dashboard)
-</code></pre>
+<ul>
+<li>ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes;</li>
+<li>PhotoFeed - assembles a list of nice photos, and passes them down using props to any component it is supplied;</li>
+<li>Dashboard - displays list of most popular content, and view duration</li>
+<li>ViewDurationTrackingController - listens for callbacks with view duration for all items, can pass data to another component (dashboard)</li>
+</ul>
 <p>Let's build the thing, bottom-up, using React this time.</p>
 <h2>1. ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes</h2>
 <p>I use mobile devices to browse social networks. On instagram, when looking at a photo, I sometimes scroll it out of the viewport so my fingers don't obstruct the view. So, I'll say that when <strong>85% of an element is in the viewport, we'll consider it &quot;being viewed&quot;</strong>.</p>
@@ -107,6 +120,6 @@ it("calls callback with correct view duration", () => {
    ></iframe>
 <p>Check it out, and next time, in Part 2 we'll write the PhotoFeed component.</p>
 
-    </div>
+		</div>
 	</body>
 </html>
