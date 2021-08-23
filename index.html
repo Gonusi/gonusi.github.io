@@ -9,14 +9,14 @@ description: Programming experiments, things I've learned about, weird javascrip
     <div class="postListItem">
         <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
         {% if post.data.description != null and post.data.description != "" %}
-        <p>{{ post.data.description }}</p>
+        <p class="description">{{ post.data.description }}</p>
         {% endif %}
         <ul class="postTagList">
         {% for tag in post.data.tags %}
             <li class="postTag"><a href="/tags/{{tag}}">{{tag}}</a></li>
         {% endfor %}
         </ul>
-        <em>{{ post.date | date: "%Y-%m-%d" }}</em>
+        <em class="date">{{ post.date | date: "%Y-%m-%d" }}</em>
     </div>
     {% endfor %}
 </div>

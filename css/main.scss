@@ -1,4 +1,6 @@
 // TODO refactor after styles are done
+$c_text: black;
+$c_hover: #49c6ec;
 
 body {
 	font-size: 18px;
@@ -8,6 +10,7 @@ body {
 	flex-direction: column;
 	align-items: center;
 	padding-top: 60px;
+	color: $c_text;
 
 	@media (min-width: 1110px) {
 		padding-top: 0;
@@ -33,7 +36,7 @@ body {
 	&:after {
 		content: "";
 		position: absolute;
-		background: #49c6ec;
+		background: $c_hover;
 		top: 40px;
 		left: 0;
 		height: 20px;
@@ -163,7 +166,9 @@ a {
 
 		a {
 			font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-			padding: 6px 20px;
+			font-family: Georgia, 'Times New Roman', Times, serif;
+			font-size: 16px;
+			padding: 5px 18px;
 			border: 1px solid blue;
 			text-decoration: none;
 
@@ -182,7 +187,8 @@ a {
 }
 
 .postListItem {
-	margin-top: 26px;
+	margin-top: 42px;
+
 	h2 {
 		font-size: 22px;
 		line-height: 28px;
@@ -191,7 +197,25 @@ a {
 
 		a {
 			text-decoration: none;
+			color: $c_text;
+			font-family: Georgia, 'Times New Roman', Times, serif;
+			font-weight: bold;
+			font-size: 18px;
+
+			&:hover, &:focus {
+				color: blue;
+			}
 		}
+	}
+
+	.description {
+		font-size: 16px;
+		line-height:22px;
+		margin: 4px 0;
+	}
+
+	.date {
+		font-size: 16px;
 	}
 }
 

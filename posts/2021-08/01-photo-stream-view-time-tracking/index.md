@@ -1,5 +1,6 @@
 ---
 title: Track view duration of fake social network feed items using intersection observer. Part 1.
+description: A part of a series where we create a photo feed, and track the view duration of each item, displaying results in a real time dashboard. Should look cool, and show me my favorite pics.
 layout: layout.html
 tags: ["posts", "weekly challenge", "experiments", "cypress", "test driven development"]
 date: 2021-08-11

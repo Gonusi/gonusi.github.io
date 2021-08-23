@@ -1,5 +1,6 @@
 ---
 title: Setting up a cronjob in a docker container running alpine linux node image container
+description: It's simple stuff that took me way too long to figure out. 
 layout: layout.html
 tags: ["posts", "today I learned", "daily", "boring as hell"]
 date: 2021-08-18
