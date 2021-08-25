@@ -1,9 +1,14 @@
+.debug .block {
+  visibility: hidden;
+}
+
 .block {
   border: 2px solid black;
   position: absolute;
   width: 80px;
   height: 80px;
   box-sizing: border-box;
+  transform: translateX(-50%) translateY(-50%);
 }
 
 .static {
@@ -23,4 +28,12 @@
 .wall.horizontal {
   width: 800px;
   height: 60px;
+}
+
+.active {
+  background: red;
+}
+
+.constraint {
+  background: teal;
 }

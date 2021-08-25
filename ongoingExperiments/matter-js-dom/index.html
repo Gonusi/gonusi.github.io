@@ -9,17 +9,22 @@
 </head>
 
 <body>
-    <div class="block moveUp" style="top: 300px; left: 300px;">1</div>
-    <div class="block moveRight" style="top: 300px; left: 50px;">2</div>
-    <div class="block moveRight" style="top: 400px; left: 50px;">3</div>
+
+    <div class="constraint">
+        <div class="block moveUp" style="top: 300px; left: 300px;">1</div>
+        <div class="block moveRight" style="top: 300px; left: 70px;">2</div>
+    </div>
+
+    <div class="block moveRight" style="top: 400px; left: 70px;">3</div>
     <div class="block moveBottom" style="top: 400px; left: 300px;">4</div>
 
-    <div class="block wall horizontal static" style="top: 0px; left: 0px;"></div>
-    <div class="block wall vertical static" style="top: 0px; left: 840px;"></div>
+    <div class="block wall horizontal static" style="top: 0px; left: 60px;"></div>
+    <div class="block wall vertical static" style="top: 60px; left: 800px;"></div>
     <div class="block wall horizontal static" style="top: 800px; left: 0px;"></div>
     <div class="block wall vertical static" style="top: 0px; left:0 px;"></div>
 </body>
 <script src="matter.min.js"></script>
 <script src="index.js"></script>
+<script src="controls.js"></script>
 
 </html>
