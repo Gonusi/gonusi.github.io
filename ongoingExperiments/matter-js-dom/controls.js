@@ -1,5 +1,4 @@
 const elementsMovingRight = document.getElementsByClassName("moveRight");
-console.log(elementsMovingRight);
 
 document.addEventListener("mousedown", () => {
   for (i = 0; i < elementsMovingRight.length; ++i) {
