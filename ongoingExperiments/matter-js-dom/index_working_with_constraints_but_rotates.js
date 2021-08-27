@@ -55,9 +55,8 @@ constraints.forEach((constrain, index) => {
     isConstrain: true,
     constraintGroup: index,
     dom: constrain,
-    matter: Bodies.rectangle(200, 400, 10, 10, {
-      isSensor: true,
-      mass: 0,
+    matter: Bodies.rectangle(300, 300, 10, 10, {
+      isSensor: false,
     }),
   });
 });
@@ -71,6 +70,7 @@ bodies.forEach((body) => {
       Constraint.create({
         bodyA: body.matter,
         bodyB: bodies.find((elem) => elem.isConstrain && elem.constraintGroup === body.constraintGroupIndex).matter,
+        angleAStiffness: 1,
       })
     );
   }
@@ -135,21 +135,3 @@ if (debug) {
 
 const runner = Runner.create();
 Runner.run(runner, engine);
-
-// Use parts intead of constraints:
-// TODO
-// https://stackoverflow.com/questions/61330579/prevent-relative-rotation-in-matter-js-constraint
-
-// let cart = bodyWithParts(200, 150, { isStatic: true, friction: 0.0 });
-
-// function bodyWithParts(x, y, options) {
-//   options = options || {}
-//   let w = 4;
-//   options.parts = [];
-//   options.parts.push(Matter.Bodies.rectangle(w, 20, 5, 20));
-//   options.parts.push(Matter.Bodies.rectangle(40 - w, 20, 5, 20));
-//   options.parts.push(Matter.Bodies.rectangle(20, 40 - w, 50, 5))
-//   let body = Matter.Body.create(options)
-//   Matter.Body.setPosition(body, { x: x, y: y });
-//   return body;
-// }
