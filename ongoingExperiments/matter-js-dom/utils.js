@@ -17,5 +17,5 @@ const getBodyDataFromElement = (element) => {
 	const x = parseInt(xRaw) + width / 2;
 	const y = parseInt(yRaw) + height / 2;
 	const isStatic = element.classList.contains("static");
-	return [x, y, width, height, { isStatic, domElement: element }];
+	return [x, y, width, height, { isStatic, domElement: element, width, height }];
 };

@@ -23,24 +23,25 @@ const context = canvas.getContext("2d");
 
 // Applies force to body in one of these directios relative to it's initial bottom: forward, right, back, left
 // Force is proportional to body area
-function moveBody(body, bodyCenter, direction, forceMultiplier = 1) {
+function moveBody(body, movedPart, forceApplicationSide, forceMultiplier = 1) {
     let forceApplicationPoint;
-    if (direction === 'top') {
-        forceApplicationPoint = Vector.add(bodyCenter, {x: 0, y: 50});
+    const bodyCenter = {x: movedPart.position.x, y: movedPart.position.y};
+    if (forceApplicationSide === 'bottom') {
+        forceApplicationPoint = Vector.add(bodyCenter, {x: 0, y: movedPart.height / 2});
     }
-    if (direction === 'right') {
-        forceApplicationPoint = Vector.sub(bodyCenter, {x: 50, y: 0});
+    if (forceApplicationSide === 'right') {
+        forceApplicationPoint = Vector.sub(bodyCenter, {x: movedPart.width / 2, y: 0});
     }
-    if (direction === 'bottom') {
-        forceApplicationPoint = Vector.sub(bodyCenter, {x: 0, y: 50});
+    if (forceApplicationSide === 'top') {
+        forceApplicationPoint = Vector.sub(bodyCenter, {x: 0, y: movedPart.height / 2});
     }
-    if (direction === 'left') {
-        forceApplicationPoint = Vector.add(bodyCenter, {x: 50, y: 0});
+    if (forceApplicationSide === 'left') {
+        forceApplicationPoint = Vector.add(bodyCenter, {x: movedPart.width / 2, y: 0});
     }
     let forceApplicationPointRotated = Vector.rotateAbout(forceApplicationPoint, body.angle, bodyCenter);
     var deltaVector = Matter.Vector.sub(bodyCenter, forceApplicationPointRotated);
 	var normalizedDelta = Matter.Vector.normalise(deltaVector);
-	var forceVector = Matter.Vector.mult(normalizedDelta, 0.001 * forceMultiplier);
+	var forceVector = Matter.Vector.mult(normalizedDelta, movedPart.area * 0.000001 * forceMultiplier);
 
     Body.applyForce(body, forceApplicationPointRotated, forceVector);
     return forceVector;
@@ -52,16 +53,17 @@ Matter.Events.on(engine, "beforeUpdate", function (event) {
         const bodyCenter = {x: body.position.x, y: body.position.y};
         if (body.domElement.classList.contains("active")) {
             if (body.domElement.classList.contains("top")) {
-                moveBody(body.parent, bodyCenter, 'top')
+                moveBody(body.parent, body, 'top')
             }
             if (body.domElement.classList.contains("right")) {
-                moveBody(body.parent, bodyCenter, 'right')
+                moveBody(body.parent, body, 'right')
             }
             if (body.domElement.classList.contains("bottom")) {
-                moveBody(body.parent, bodyCenter, 'bottom')
+                console.log('active bottom engine')
+                moveBody(body.parent, body, 'bottom')
             }
             if (body.domElement.classList.contains("left")) {
-                moveBody(body.parent, bodyCenter, 'left')
+                moveBody(body.parent, body, 'left')
             }
         }
     })
@@ -91,12 +93,14 @@ if (debug) {
 		element: document.body,
 		engine: engine,
 		options: {
-			width: 1200,
-			height: 1200,
+			width: 800,
+			height: 800,
 		},
 	});
 	Render.run(render);
 }
+
+console.log(matterBodies)
 
 const runner = Runner.create();
 Runner.run(runner, engine);
