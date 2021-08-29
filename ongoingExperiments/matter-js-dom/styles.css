@@ -5,6 +5,18 @@ html, body {
 
 div {
   position: absolute;
+}
+
+.block {
+  position: absolute;
   border: 2px solid black;
-  visibility: hidden;
+  box-sizing: border-box;
+}
+
+.active {
+  background: red;
+}
+
+.group {
+  border: 2px solid green;
 }

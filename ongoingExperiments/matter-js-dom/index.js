@@ -73,20 +73,19 @@ Matter.Events.on(engine, "beforeUpdate", function (event) {
 Composite.add(engine.world, matterBodies);
 
 function renderDOM() {
-	let renderedBodies = Composite.allBodies(engine.world);
-	for (let i = 0; i < renderedBodies.length; i += 1) {
-		const renderedBody = renderedBodies[i];
-		// const domElem = bodies[i].dom;
-
-		// domElem.style.left = `${renderedBodies[i].position.x}px`;
-		// domElem.style.top = `${renderedBodies[i].position.y}px`;
+	for (let i = 0; i < allBodyParts.length; i++) {
+		allBodyParts[i].domElement.style.left = `${allBodyParts[i].position.x}px`;
+		allBodyParts[i].domElement.style.top = `${allBodyParts[i].position.y}px`;
 	}
+    for (let i = 0; i < matterBodies.length; i++) {
+        matterBodies[i].domElement.style.transform = `rotate(${allBodyParts[i].angle * 180 * Math.PI}deg`;
+    }
 }
 
 // TODO move to RAF when basic bugs are solved
 setInterval(() => {
 	renderDOM();
-}, 50);
+}, 20);
 
 if (debug) {
 	let render = Render.create({

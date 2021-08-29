@@ -39,5 +39,14 @@ var createPart = function (elem) {
 		...matterBodies[topLevelMachineParentElementBodyId].parts,
 		body,
 	]);
+
+    const { min, max } = matterBodies[topLevelMachineParentElementBodyId].bounds;
+	console.log('bounds', min, max)
+	const width = max.x - min.x;
+	const height = max.y - min.y;
+	topLevelMachineParentElement.style.top = min.y;
+	topLevelMachineParentElement.style.left = min.x;
+	topLevelMachineParentElement.style.height = height;
+	topLevelMachineParentElement.style.width = width;
 	allBodyParts.push(body);
 };

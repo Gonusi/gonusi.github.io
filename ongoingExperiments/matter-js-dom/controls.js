@@ -4,7 +4,7 @@ const bottomEngineElements = document.getElementsByClassName("bottom");
 const leftEngineElements = document.getElementsByClassName("left");
 
 document.addEventListener("keydown", (e) => {
-	console.log('keydown', e.code);
+	// console.log('keydown', e.code);
   if (e.code === 'ArrowUp') {
     for (let i = 0; i < bottomEngineElements.length; i++) {
       bottomEngineElements[i].classList.add('active');
@@ -28,7 +28,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-	console.log('keyup:', e.code);
+	// console.log('keyup:', e.code);
   if (e.code === 'ArrowUp') {
     for (let i = 0; i < bottomEngineElements.length; i++) {
       bottomEngineElements[i].classList.remove('active');
