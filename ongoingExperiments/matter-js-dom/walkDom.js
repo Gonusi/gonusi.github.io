@@ -23,10 +23,13 @@ var matterBodies = [];
 var allBodyParts = [];
 
 var createBody = function (elem) {
+	
+	console.log('create-body:', getBodyDataFromElement(elem));
 	const body = Bodies.rectangle(...getBodyDataFromElement(elem));
 	matterBodies.push(body);
 	allBodyParts.push(body);
 	elem.setAttribute("data-body-id", body.id);
+	console.log('create body')
 };
 
 var createPart = function (elem) {
@@ -36,17 +39,19 @@ var createPart = function (elem) {
 		topLevelMachineParentElement.getAttribute("data-body-id");
 	// This assumes parent body already "walked", will this fail?
 	Body.setParts(matterBodies[topLevelMachineParentElementBodyId], [
-		...matterBodies[topLevelMachineParentElementBodyId].parts,
+		// This should NOT be required, but it doesn't work now without it. Why? See index_demo_of_adding_parts_manually for a working example
+		// ...matterBodies[topLevelMachineParentElementBodyId].parts,
 		body,
 	]);
+	console.log('create part, body:', body)
 
     const { min, max } = matterBodies[topLevelMachineParentElementBodyId].bounds;
 	console.log('bounds', min, max)
 	const width = max.x - min.x;
 	const height = max.y - min.y;
-	topLevelMachineParentElement.style.top = min.y;
-	topLevelMachineParentElement.style.left = min.x;
-	topLevelMachineParentElement.style.height = height;
-	topLevelMachineParentElement.style.width = width;
+	// topLevelMachineParentElement.style.top = min.y;
+	// topLevelMachineParentElement.style.left = min.x;
+	// topLevelMachineParentElement.style.height = height;
+	// topLevelMachineParentElement.style.width = width;
 	allBodyParts.push(body);
 };

@@ -77,9 +77,10 @@ function renderDOM() {
 		allBodyParts[i].domElement.style.left = `${allBodyParts[i].position.x}px`;
 		allBodyParts[i].domElement.style.top = `${allBodyParts[i].position.y}px`;
 	}
-    for (let i = 0; i < matterBodies.length; i++) {
-        matterBodies[i].domElement.style.transform = `rotate(${allBodyParts[i].angle * 180 * Math.PI}deg`;
-    }
+    // TODO need to rotate whole parent group, not separte bodies, but for this need to get bounding box
+    // for (let i = 0; i < matterBodies.length; i++) {
+    //     matterBodies[i].domElement.style.transform = `rotate(${allBodyParts[i].angle * 180 * Math.PI}deg`;
+    // }
 }
 
 // TODO move to RAF when basic bugs are solved
@@ -99,7 +100,10 @@ if (debug) {
 	Render.run(render);
 }
 
-console.log(matterBodies)
+// console.log(matterBodies)
 
 const runner = Runner.create();
 Runner.run(runner, engine);
+
+console.log(Composite.allBodies(engine.world)[0].parts)
+console.log(Composite.allBodies(engine.world)[0].bounds)
