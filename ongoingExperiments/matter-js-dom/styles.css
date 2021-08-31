@@ -1,18 +1,20 @@
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
+  position: relative;
 }
 
 div {
   position: absolute;
-  border: 2px solid black;
+  /* border: 2px solid green; */
   box-sizing: border-box;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .block {
   position: absolute;
-  border: 2px solid black;
+  border: 2px solid green;
   box-sizing: border-box;
 }
 
@@ -21,5 +23,7 @@ div {
 }
 
 .group {
-  border: 2px solid green;
+  background: rgba(0, 0, 0, 0.1);
+  border: 0;
+  box-sizing: border-box;
 }
