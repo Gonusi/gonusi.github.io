@@ -406,3 +406,80 @@ curl -X POST https://dev-90897551.okta.com/oauth2/default/v1/token \
 ```
 
 ## OpenID
+
+## VEIKIA SU OIDC-CLIENT:
+
+Neveikia su mano:
+
+Authorize URL:
+https://dev-90897551.okta.com/oauth2/default/v1/authorize?response_type=code&scope=photos&client_id=0oa1n8fy6dZUEG6M15d7&state=GvlRAii7vdh0KcEhSkeGHrgUH13esiMCgMk_TWCLnqM&redirect_uri=https%3A%2F%2Fkasparoauth.local%3A8000%2Fredirect.html&code_challenge=GvlRAii7vdh0KcEhSkeGHrgUH13esiMCgMk_TWCLnqM&code_challenge_method=S256&response_mode=query
+
+client_id: 0oa1n8fy6dZUEG6M15d7
+code_challenge_method: S256
+code_challenge: GvlRAii7vdh0KcEhSkeGHrgUH13esiMCgMk_TWCLnqM
+redirect_uri: https://kasparoauth.local:8000/redirect.html
+response_mode: query
+response_type: code
+scope: photos
+state: GvlRAii7vdh0KcEhSkeGHrgUH13esiMCgMk_TWCLnqM
+
+Redirects to my redirect url:
+https://kasparoauth.local:8000/redirect.html?code=p5go5EO3xBpmll7RBVErxUYQcrDd7HUKyOyIVOd3VKE&state=GvlRAii7vdh0KcEhSkeGHrgUH13esiMCgMk_TWCLnqM
+
+I make POST TO:
+https://dev-90897551.okta.com/oauth2/default/v1/token
+
+client_id: 0oa1n8fy6dZUEG6M15d7
+code_verifier: 7f0a2aaea878c463b97af9d06b6e2cf7bfe8115a2d3fda989acdf349
+code: p5go5EO3xBpmll7RBVErxUYQcrDd7HUKyOyIVOd3VKE
+grant_type: authorization_code
+redirect_uri: https://kasparoauth.local:8000/redirect.html
+
+VEIKIA SU JU:
+Authorize URL:
+https://dev-90897551.okta.com/oauth2/default/v1/authorize?client_id=0oa1n8fy6dZUEG6M15d7&redirect_uri=https%3A%2F%2Fkasparoauth.local%3A8000%2Fredirect.html&response_type=code&scope=photos&state=7acf79dfeab649ac9931e5c3b334d2e1&code_challenge=34qqNYhHq4alBzRBQV1dIlVRxbld5ST-9TlkB-mImhI&code_challenge_method=S256&response_mode=query
+
+client_id: 0oa1n8fy6dZUEG6M15d7
+code_challenge_method: S256
+code_challenge: 34qqNYhHq4alBzRBQV1dIlVRxbld5ST-9TlkB-mImhI
+redirect_uri: https://kasparoauth.local:8000/redirect.html
+response_mode: query
+response_type: code
+scope: photos
+state: 7acf79dfeab649ac9931e5c3b334d2e1
+
+Redirects to my redireect url:
+https://kasparoauth.local:8000/redirect.html?code=wJq6akiWRRbe4e5ywElFwBBQra49rBYK37utOjBa3CY&state=7acf79dfeab649ac9931e5c3b334d2e1
+
+I make POST TO:
+https://dev-90897551.okta.com/oauth2/default/v1/token
+
+client_id: 0oa1n8fy6dZUEG6M15d7
+code_verifier: 66c86409acc24d0387db3875bfce24c189193ac9aee54e1492fd9c34b838491be5936e36a54346c3bd05f3252514fbc0
+code: wJq6akiWRRbe4e5ywElFwBBQra49rBYK37utOjBa3CY
+grant_type: authorization_code
+redirect_uri: https://kasparoauth.local:8000/redirect.html
+
+source:
+client_id=0oa1n8fy6dZUEG6M15d7&code=rQlBN2XK60HpJiUifv2igHabNXas8KGIq5NEa7Ye46Q&redirect_uri=https%3A%2F%2Fkasparoauth.local%3A8000%2Fredirect.html&code_verifier=214b667b4d434f56bb7f20aca677ea05f5ec0dfee0a74a3fa4eba3865fadad7803bd7f4a23b04f15a2eac827ff2e062a&grant_type=authorization_code
+
+Request headers:
+:authority: dev-90897551.okta.com
+:method: POST
+:path: /oauth2/default/v1/token
+:scheme: https
+accept: _/_
+accept-encoding: gzip, deflate, br
+accept-language: lt,en-US;q=0.9,en;q=0.8
+cache-control: no-cache
+content-length: 288
+content-type: application/x-www-form-urlencoded
+origin: https://kasparoauth.local:8000
+pragma: no-cache
+referer: https://kasparoauth.local:8000/
+sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
+sec-ch-ua-mobile: ?0
+sec-fetch-dest: empty
+sec-fetch-mode: cors
+sec-fetch-site: cross-site
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36
