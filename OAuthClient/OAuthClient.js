@@ -6,9 +6,9 @@ async function OauthClient({ clientId, encryptionMethod = "S256", forceMetadataU
   if (!metadata || forceMetadataUpdate) updateMetadata();
 
   async function updateMetadata() {
-    const { data } = await axios.get(metadataURL);
-    metadata = data;
-    window.localStorage.setItem(storageKey, JSON.stringify(metadata));
+    const response = await axios.get(metadataURL);
+    metadata = response.data;
+    window.localStorage.setItem(storageKey, JSON.stringify(response.data));
   }
 
   async function generateCodeChallengeAndVerifier() {
@@ -30,20 +30,16 @@ async function OauthClient({ clientId, encryptionMethod = "S256", forceMetadataU
     }
 
     function base64urlencode(a) {
-      // Convert the ArrayBuffer to string using Uint8 array.
-      // btoa takes chars from 0-255 and base64 encodes.
-      // Then convert the base64 encoded to base64url encoded.
-      // (replace + with -, replace / with _, trim trailing =)
       return btoa(String.fromCharCode.apply(null, new Uint8Array(a)))
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
         .replace(/=+$/, "");
     }
 
-    async function PKCEChallengeFromVerifier(v) {
-      const hashed = await sha256(v);
-      const base64encoded = base64urlencode(hashed);
-      return base64encoded;
+    async function PKCEChallengeFromVerifier(verifier) {
+      const hashedVerifier = await sha256(verifier);
+      const base64encodedVerifier = base64urlencode(hashedVerifier);
+      return base64encodedVerifier;
     }
 
     const randomString = generateRandomString();
@@ -53,10 +49,9 @@ async function OauthClient({ clientId, encryptionMethod = "S256", forceMetadataU
     return { codeVerifier, codeChallenge };
   }
 
-  async function signin({ scopes }) {
+  async function signinRedirect({ scopes }) {
     const { codeChallenge, codeVerifier } = await generateCodeChallengeAndVerifier();
     window.localStorage.setItem(codeChallenge, codeVerifier);
-    // Form URL
     const authorizationURI =
       `${metadata.authorization_endpoint}?` +
       `response_type=code&` +
@@ -67,26 +62,12 @@ async function OauthClient({ clientId, encryptionMethod = "S256", forceMetadataU
       `code_challenge=${codeChallenge}&` +
       `code_challenge_method=${encryptionMethod}&` +
       `response_mode=query`;
-    console.log("Authorization URI:", authorizationURI);
     window.location.assign(authorizationURI);
   }
 
   async function exchangeCodeToToken({ code, state }) {
     const codeVerifier = window.localStorage.getItem(state);
     if (!codeVerifier) throw new Error("State mismatch");
-
-    console.log(
-      "You can make manual request too:"`
-curl --request POST \
-  --url '${metadata.token_endpoint}' \
-  --header 'content-type: application/x-www-form-urlencoded' \
-  --data grant_type=authorization_code \
-  --data 'client_id=${clientId}' \
-  --data code_verifier=${codeVerifier} \
-  --data code=${code} \
-  --data 'redirect_uri=${redirectURI}'
-`
-    );
 
     const params = new URLSearchParams();
     params.append("grant_type", "authorization_code");
@@ -107,7 +88,7 @@ curl --request POST \
 
   return {
     updateMetadata,
-    signin,
+    signinRedirect,
     exchangeCodeToToken,
   };
 }

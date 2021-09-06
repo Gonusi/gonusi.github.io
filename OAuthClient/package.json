@@ -1,16 +1,12 @@
 {
-  "name": "OAuthClient",
-  "version": "1.0.0",
-  "description": "",
+  "name": "oauth-client",
+  "version": "0.0.1",
+  "description": "A super simple OAuth 2.1 client supporting only the code challenge flow (with or without PKCE)",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
-  "author": "",
+  "author": "Kasparas Anusauskas",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.3",
-    "oidc-client": "^1.11.5"
+    "axios": "^0.21.3"
   }
 }
