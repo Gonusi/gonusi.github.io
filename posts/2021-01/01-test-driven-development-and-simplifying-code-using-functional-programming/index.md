@@ -25,7 +25,7 @@ To do this, we'll need:
 1. Node
 2. [Jest](https://jestjs.io/docs/en/getting-started.html) (our test runner)
 
-Here's how simple it is:
+Here's how simple it is, really:
 
 ```bash
 # Install Jest

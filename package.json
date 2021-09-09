@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"build": "eleventy",
 		"test": "jest --watchAll"
 	},
 	"keywords": [],
