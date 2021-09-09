@@ -1,13 +1,12 @@
 ---
-title: Learning to love test driven development in JS with simpler tests
+title: Learning to (kind of) enjoy test driven development in JS with simpler tests
+description: TDD encorces good practices - including actually making your components easily testable without duplicating their functionality in test code and and, having broken tests after minor(est)  reworks.  
 layout: layout.html
 tags: ["posts", "daily", "code style"]
 date: 2021-01-04
 ---
 
 ##
-
-Is `love` a word which is a bit on the strong side, maybe? We'll see. Anyway.
 
 I have never _really_ used test driven development. When I tried, it got too clumsy, messy, I tried testing methods of my classes. Didn't really know what I was doing.
 

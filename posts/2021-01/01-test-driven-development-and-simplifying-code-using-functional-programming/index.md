@@ -1,5 +1,6 @@
 ---
 title: Test driven development and reading on how to simplify my code
+description: Force myself to follow TDD on personal experiments. 
 layout: layout.html
 tags: ["posts", "daily", "TDD"]
 date: 2021-01-01

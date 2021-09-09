@@ -5,7 +5,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 60px;
+  padding: 60px 0 0 0;
+  margin: 0;
   color: black;
   position: relative;
 }
@@ -17,7 +18,8 @@ body {
 body:before {
   content: "";
   position: absolute;
-  background: blue;
+  background: black;
+  background: linear-gradient(black, #000066);
   top: 0;
   left: 0;
   height: 40px;
@@ -26,11 +28,12 @@ body:before {
 @media (min-width: 1100px) {
   body:before {
     position: absolute;
-    top: -10px;
-    left: -10px;
+    top: 0px;
+    left: 0px;
     height: 100vh;
     width: 60px;
     height: 100%;
+    background: black;
     background: linear-gradient(black, #000066);
   }
 }
@@ -46,8 +49,8 @@ body:after {
 @media (min-width: 1100px) {
   body:after {
     position: absolute;
-    top: -10px;
-    left: 30px;
+    top: 0px;
+    left: 40px;
     height: 100vh;
     width: 20px;
     height: 100%;
@@ -110,9 +113,11 @@ h1:after {
 
 a {
   color: blue;
+  text-decoration: none;
 }
 a:hover {
-  color: #49c6ec;
+  text-decoration: underline;
+  color: #32bfea;
 }
 
 .header {
@@ -163,9 +168,10 @@ a:hover {
 .navList > li a {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 15px;
-  padding: 7px 14px;
-  border: 1px solid blue;
+  font-size: 14px;
+  padding: 8px 14px;
+  border: 2px solid blue;
+  font-weight: 600;
   text-decoration: none;
 }
 .navList > li a:hover {
@@ -199,7 +205,7 @@ a:hover {
 .postListItem .description {
   font-size: 16px;
   line-height: 22px;
-  margin: 4px 0;
+  margin: 10px 0;
 }
 .postListItem .date {
   font-size: 16px;
@@ -212,7 +218,6 @@ a:hover {
 }
 
 .postTag {
-  padding: 0;
   margin: 10px 5px 5px 0;
   font-size: 13px;
   display: inline-block;
@@ -220,8 +225,9 @@ a:hover {
   line-height: 16px;
 }
 .postTag a {
-  border: 1px solid blue;
-  padding: 2px 5px;
+  border: 2px solid blue;
+  padding: 4px 6px;
+  font-weight: 600;
   text-decoration: none;
 }
 .postTag a:hover {
