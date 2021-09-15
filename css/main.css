@@ -1,6 +1,6 @@
 body {
-  font-size: 18px;
-  line-height: 33px;
+  font-size: 17px;
+  line-height: 34px;
   font-family: Georgia, "Times New Roman", Times, serif;
   display: flex;
   flex-direction: column;
@@ -9,6 +9,7 @@ body {
   margin: 0;
   color: black;
   position: relative;
+  background: white;
 }
 @media (min-width: 1110px) {
   body {
@@ -50,9 +51,9 @@ body:after {
   body:after {
     position: absolute;
     top: 0px;
-    left: 40px;
+    left: 45px;
     height: 100vh;
-    width: 20px;
+    width: 15px;
     height: 100%;
   }
 }
@@ -249,6 +250,11 @@ a:hover {
 }
 .footer .about a {
   text-decoration: none;
+}
+
+ul li, ol li {
+  line-height: 30px;
+  margin-bottom: 18px;
 }
 
 /*# sourceMappingURL=main.css.map */
