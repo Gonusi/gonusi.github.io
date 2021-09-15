@@ -1,10 +1,29 @@
-// TODO refactor after styles are done
+// // TODO refactor after styles are done
+// $c_text: white;
+// // $c_primary: #0fe468;
+// $c_primary: #00d169;
+// $c_secondary: #d6b007;
+// $c_tertiary: #ec8e01;
+// $c_hover: $c_secondary;
+
+// $c_text: #f0f0f0;
+// $c_primary: rgb(68, 68, 228);
+// $c_secondary: darken(yellow, 15%);
+// $c_tertiary: yellow;
+// $c_hover: $c_secondary;
+//$c_background: darken(gray, 30%);
+
 $c_text: black;
-$c_hover: #49c6ec;
+$c_primary: blue;
+$c_secondary: #49c6ec;
+$c_tertiary: yellow;
+$c_hover: $c_primary;
+$c_background: white;
+
 
 body {
-	font-size: 18px;
-	line-height: 33px;
+	font-size: 17px;
+	line-height: 34px;
 	font-family: Georgia, "Times New Roman", Times, serif;
 	display: flex;
 	flex-direction: column;
@@ -13,6 +32,7 @@ body {
 	margin: 0;
 	color: $c_text;
 	position: relative;
+	background: $c_background;
 
 
 	@media (min-width: 1110px) {
@@ -23,7 +43,7 @@ body {
 		content: "";
 		position: absolute;
 		background: black;
-		background: linear-gradient(black, darken(blue, 30%));
+		background: linear-gradient(black, darken($c_primary, 30%));
 		top: 0;
 		left: 0;
 		height: 40px;
@@ -36,14 +56,14 @@ body {
 			width: 60px;
 			height: 100%;
 			background: black;
-			background: linear-gradient(black, darken(blue, 30%))
+			background: linear-gradient(black, darken($c_primary, 30%))
 		}
 	}
 
 	&:after {
 		content: "";
 		position: absolute;
-		background: $c_hover;
+		background: $c_secondary;
 		top: 40px;
 		left: 0;
 		height: 20px;
@@ -51,9 +71,9 @@ body {
 		@media (min-width: 1100px) {
 			position: absolute;
 			top: 0px;
-			left: 40px;
+			left: 45px;
 			height: 100vh;
-			width: 20px;
+			width: 15px;
 			height: 100%;
 
 		}
@@ -86,7 +106,7 @@ h1 {
 		transform: translateX(0) translateY(-100%);
 		left: -30px;
 		font-size: 200px;
-		color: yellow;
+		color: $c_tertiary;
 		font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 		z-index: -1;
 	}
@@ -99,7 +119,7 @@ h1 {
 		transform: translateX(0) translateY(-100%);
 		right: -30px;
 		font-size: 200px;
-		color: yellow;
+		color: $c_tertiary;
 		font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 		z-index: -1;
 	}
@@ -119,7 +139,7 @@ iframe {
 }
 
 a {
-	color: blue;
+	color: $c_primary;
 	text-decoration: none;
 	&:hover {
 		text-decoration: underline;
@@ -180,12 +200,12 @@ a {
 			font-family: Georgia, 'Times New Roman', Times, serif;
 			font-size: 14px;
 			padding: 8px 14px;
-			border: 2px solid blue;
+			border: 2px solid $c_primary;
 			font-weight: 600;
 			text-decoration: none;
 
 			&:hover {
-				background: blue;
+				background: $c_primary;
 				color: white;
 			}
 		}
@@ -215,7 +235,7 @@ a {
 			font-size: 18px;
 
 			&:hover, &:focus {
-				color: blue;
+				color: $c_primary;
 			}
 		}
 	}
@@ -245,14 +265,14 @@ a {
 	line-height: 16px;
 
 	a {
-		border: 2px solid blue;
+		border: 2px solid $c_primary;
 		padding: 4px 6px;
 		font-weight: 600;
 		text-decoration: none;
 
 		&:hover {
 			color: white;
-			background: blue;
+			background: $c_primary;
 		}
 	}
 }
@@ -272,5 +292,12 @@ a {
 		a {
 			text-decoration: none;
 		}
+	}
+}
+
+ul, ol {
+	li {
+		line-height: 30px;
+		margin-bottom: 18px;
 	}
 }

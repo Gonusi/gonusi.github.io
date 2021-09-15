@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<link href="/css/main.css" rel="stylesheet" />
+		<link href="/css/prism-theme-retro.css" rel="stylesheet" />
+		<title>Make CRA dev server respond to CORS OPTIONS requests, as a gentleman should · TODO</title>
+		<meta name="description" content="Create React App allows you to configure a proxy server, modifying responses it makes. This can be useful for a lot of things, we'll use it to set up cross origin communication between two CRA apps running on same machine, different local domains."/>
+	</head>
+	<body>
+		<header class="header">
+			<div class="blogInfo">
+				<div class="logo">Kasparas Anusauskas</div>
+				<div class="about">Personal development notes and experiments</div>
+			</div>
+			<nav class="nav">
+				<ul class="navList">
+					<li>
+						<a href="/"> Home </a>
+					</li>
+					<li>
+						<a href="/about">About</a>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		<main class="wrapper">
+			<h1>Make CRA dev server respond to CORS OPTIONS requests, as a gentleman should</h1>
+			<p>If you have ever wished to access the dev server of Create React App, your'e in luck. While working on a login page for a custom authorization server, I needed our OAuth client (SPA app) to return <code>204 OK</code> response with correct CORS headers even in development mode. Essentially, I wanted two CRA apps running on different ports to be able to talk to each other using cross origin POST requests.</p>
+<p>Development server (also based on CRA) with login page running @ https://login.app:3000:</p>
+<pre class="language-bash"><code class="language-bash">POST <span class="token variable"><span class="token variable">`</span>https://client.app:3001/login-callback?code<span class="token operator">=</span><span class="token number">123</span>?state<span class="token operator">=</span><span class="token number">456</span><span class="token variable">`</span></span></code></pre>
+<p>Client App must respond:</p>
+<pre class="language-bash"><code class="language-bash"><span class="token number">204</span> OK<br><span class="token comment">#CORS headers (regular ones ommited for briefness): </span><br><span class="token punctuation">{</span><br>    Access-Control-Allow-Origin: https://login.app:3000 // allow login app to <span class="token function">make</span> cross origin POST request to me<br>    Access-Control-Allow-Credentials: <span class="token boolean">true</span> // allow login app to send me cookies on a cross origin request<br>    Access-Control-Allow-Methods: GET, POST // allow login app to use these methods on a cross origin request<br><span class="token punctuation">}</span><br></code></pre>
+<p>Fortunately, if you put a file <code>setupProxy.js</code> in your <code>src</code> directory, you can configure a proxy server, modifying responses made by CRA dev server at your own will. Let's use a popular (CORS)[https://www.npmjs.com/package/cors] middleware npm module to set up cross origin responses automatically.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// src/setupProxy.js</span><br><span class="token comment">// do npm install --save-dev cors to install the cors package</span><br><br><span class="token keyword">const</span> cors <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'cors'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token keyword">const</span> corsOptions <span class="token operator">=</span> <span class="token punctuation">{</span><br>	origin<span class="token operator">:</span> <span class="token string">'https://login.app:3000'</span><span class="token punctuation">,</span><br>	credentials<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span><br>    methods<span class="token operator">:</span> <span class="token string">"GET,POST"</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span><br><br>module<span class="token punctuation">.</span><span class="token function-variable function">exports</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">app</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token function">cors</span><span class="token punctuation">(</span>corsOptions<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>	app<span class="token punctuation">.</span><span class="token function">options</span><span class="token punctuation">(</span><span class="token string">'*'</span><span class="token punctuation">,</span> <span class="token function">cors</span><span class="token punctuation">(</span>corsOptions<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br></code></pre>
+<p>And that's it. You'll get the response I need. To recap what we have done:</p>
+<ul>
+<li>configured node express server running (or proxying?) our CRA app on local domain https://client.app:3001;</li>
+<li>when it receives OPTIONS request, it will respond with certain headers (specified above);</li>
+<li>when browser running App https://login.app:3000 makes that OPTIONS request, specified response headers inform it it's OK to continue with the actual POST request;</li>
+<li>everything works out nicely.</li>
+</ul>
+<p>Actually, we could not use any imported package at all. We could just create a little middleware ourselves:</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// src/setupProxy.js</span><br>module<span class="token punctuation">.</span><span class="token function-variable function">exports</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">app</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>        res<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'Access-Control-Allow-Origin'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'https://login.app:3000'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        res<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'Access-Control-Allow-Methods'</span><span class="token punctuation">,</span> <span class="token string">'GET,POST'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        res<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'Access-Control-Allow-Credentials'</span><span class="token punctuation">,</span> <span class="token string">'true'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        res<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'Access-Control-Allow-Credentials'</span><span class="token punctuation">,</span> <span class="token string">'true'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>The <code>cors</code> package however has some sande defaults. Stuff also gets more complex than it needs to be when you have to whitelist multiple domains (you can not just use * for OPTIONS) etc. It's easy with the cors package.</p>
+<p>So that's it. This is great stuff. You can do any server related work with this, I guess. FIY, I do not know if this is really a proxy server sitting in between CRA dev server and you, or are we really configuring the actual dev server (I suspect not). Please comment if you do know.</p>
+<p>Further reading:</p>
+<ul>
+<li><a href="https://create-react-app.dev/docs/proxying-api-requests-in-development/">official CRA website on setupProxy</a></li>
+</ul>
+<p>Have a wonderful day.</p>
+
+		</main>
+		<footer class="footer">
+			<div class="about">
+				<div><strong>Kasparas Anusauskas</strong></div>
+				<a href="https://www.linkedin.com/in/kasparas-anusauskas">LinkedIn</a>
+			</div>
+		</footer>
+	</body>
+</html>
