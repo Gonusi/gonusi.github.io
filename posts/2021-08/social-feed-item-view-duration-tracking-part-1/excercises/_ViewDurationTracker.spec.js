@@ -8,7 +8,7 @@ beforeEach(() => {
 });
 
 it("renders children inside a div", () => {
-	mount(<TimedViewContainer>I am a single child</TimedViewContainer>);
+	mount(<ViewDurationTracker>I am a single child</ViewDurationTracker>);
 	cy.get("[data-cy=TimedViewContainer]").contains("I am a single child");
 });
 
@@ -16,7 +16,7 @@ it("calls callback with correct view duration", () => {
 	const callback = cy.stub().as("callback");
 	mount(
 		<div style={{ paddingTop: 10000 }}>
-			<TimedViewContainer onViewDurationMsChange={callback} />
+			<ViewDurationTracker onViewDurationMsChange={callback} />
 		</div>
 	);
 
