@@ -8,30 +8,30 @@ date: 2021-08-11
 
 ## What we're gonna Build
 
-** Weekly challenge is for experiments, I reserve up to 7 hours from my week for those, including writing the blog. I've found that if I don't get myself a limit, I'll get obsessed with this stuff and never even post it, never getting it "perfect". Stupid animal brain it is. **
+** Weekly challenge is for experiments, I reserve up to 7 hours from my week for those, including writing the blog. So there might be unfinished business below. You have been warned. **
 
-Social networks and websites often have feeds where you scroll through content items. It's then common sense they would time your view of each piece, recording the exact duration you spent viewing it. This would greatly help in serving even more similarly engaging, intelligence-stimulating content, because that's what we like to see, right? I've recently seen a movie, (The social dilemma)[https://www.google.com/search?q=imdb+the+social+dilemma] which talks about this stuff a lot. I don't agree it makes social networks "evil", but it's a pretty interesting watch anyway. 
+Social networks and websites often have feeds where you scroll through content items. It's then common sense they would measure the view duration of each piece. This would greatly help in serving even more "similarly engaging, intelligence-stimulating content", because that's what we like to see, right? I've recently seen a movie, (The social dilemma)[https://www.google.com/search?q=imdb+the+social+dilemma] which talks about this stuff a lot. I don't agree with the narrative it makes social networks "evil", but I still enjoyjed it. 
 
 Let's build a feed of nice images and measure ourselves to see how the whole tracking thing can be built easily, and how the results look, real time. 
 
 ## The app
 
-Nothing takes away the fun better than a good, detailed plan. Yet, practice shows it's at least OK to have a loose one, even for fun things. So I had one. The components should have been:
+Nothing takes away the fun better than a good, detailed plan. Let's use React, and build these components:
 
 - ViewDurationTracker - renders content, fires callback passed from parent with view duration when it changes;
 - Feed - assembles a categorized, pseudo-randomized list of nice photos, and passes them down using props to any component it is supplied;
 - Dashboard - displays list of most popular content, and view duration
 - Controller - listens for callbacks with view duration for all items, can pass data to another component (dashboard)
 
-To my suprise, things went exacty according to plan this time. I will not present all the code here, as the experiments do get a bit complex. Feel free to check it on (github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or run it on (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7] which you will also find embedded on the bottom of this post.
+I will not present all the code here, as the experiments do get a bit complex. Feel free to check it on (github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or run it on (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7] which you will also find embedded on the bottom of this post.
 
-So, the most important parts. 
+Let's discuss key parts and view the result. 
 
-### ViewDurationTracker - the main element enabling us to very easily track, well, view duration
+### ViewDurationTracker - the main element enabling us to very easily time the view
 
 To build this stuff, first I had to put down some ground rules. 
 
-On instagram, when looking at a photo, I sometimes scroll it out of the viewport so my fingers don't obstruct the view. So, I'll say that when **85% of an element is in the viewport, we'll consider it "being viewed"**. 
+On Instagram, when looking at a photo, I sometimes scroll it out of the viewport so my fingers don't obstruct the view. So, I'll say that when **85% of an element is in the viewport, we'll consider it "being viewed"**. 
 
 *Obviously this is greatly simplified, and there is probably a whole branch of analytics just for getting the various "in view" factors right - but 85% is gonna work fine for our 7 hours of alloted time :)*
 
@@ -62,16 +62,15 @@ it("renders children inside a div", () => {
 });
 
 it("calls callback passing correct arguments", function () {
-  // Not nice to use window like this, but I do know the implications (we're ok, it's a test)
-  // It saves me a headache later when setting up a spy
+  // I know I know. But cy.spy() only accepts [object, property] - let's keep it simple and refactor later if we have time. 
   window.callback = ({ viewDuration, properties }) => {
     expect(viewDuration).to.be.greaterThan(100);
-    // Allow 50ms of "leeway" for the scrolling done by our poor JS thread
+    // Expect 200ms view duration, but allow up to 250ms 
+    // The programattic scrolling part consumes a few ms so we're adjusting for taht
     expect(viewDuration).to.be.lessThan(150);
     expect(properties.id).to.be.equal(1);
   };
 
-  // Spy on the nastily defined window property 
   cy.spy(window, "callback").as("callback");
   mount(
     <div style={{ paddingTop: "10000px" }}>
@@ -84,11 +83,11 @@ it("calls callback passing correct arguments", function () {
   // At this point we're in a real browser, on the top of the viewport
   cy.scrollTo("bottom");
   // We've now scrolled ±10000px down
-  cy.wait(100);
-  // After waiting a 100ms we scroll back up
+  cy.wait(200);
+  // After waiting a 200ms we scroll back up
   cy.scrollTo("top");
   // And we check that our callback was called.
-  // The other checks are in the callback above, check them out. 
+  // Callback above contains more checks
   cy.get("@callback").should("have.been.called");
 
   // Possibly the more "Cypress'y" way to do this for reference (but I don't like it):
@@ -112,12 +111,13 @@ import React, { useEffect, useRef, useReducer } from "react";
 
 const initialState = { lastEntryTime: 0, viewDuration: 0 };
 
-// Using reducer my 3 simple rules of determining "will you get fucked up by the functional component" say I indeed will:
+// Using reducer because my 3 simple rules of determining "will you get fucked up by the functional component" say I indeed will:
 // - Does it pass a callback to some function? // true
 // - Does the callback modify state ? // true
 // - Does the state modification relies on previous state? // true
 // When all 3 are true, you will have stale state problems due to JS closures, just manage the state in a reducer like this to avoid it.
-// Read the excellent article about it here. Read it all, and read it at least 3 times:
+// The callback only dispatches actions, and does not need to know anything about the state, avoiding problems entirely
+// If in doubt, read the excellent article about it here. Read it all, and read it at least 3 times:
 // https://overreacted.io/a-complete-guide-to-useeffect/
 const reducer = (state, action) => {
   switch (action.type) {
@@ -191,15 +191,104 @@ const ViewDurationTracker = ({
 export default ViewDurationTracker;
 ```
 
-And that's it. We can now track the duration of this item. It would have taken a lot more logic in the old times... Anyway, let's review the functioanlity of other components, without pasting their code here.
+At this point, we can  track the duration of a single item. We still need to deploy a swarm of these trackers on a fake "feed" of images, aggregate all their view durations as the user scrolls through and display the data. 
 
 ## Feed, Dashboard and Controller
 
+### Fetch photo data using unsplash.com API
+
+For the experiment, we'll need something to track. Unsplash has a wonderful API allowing us to search fetch a list of image data based on many search criteria. I've assembled a list of such images fetched from multiple categories (see below). Then, transposed the json data a it as to avoid fiddling with the objects during run time. 
+
+Here's a (not very nicely built but working) node script:
+```js
+// to run, install nodejs, name the file "getPhotos.js" and, from the project dir run:
+// node ./getPhotos.js
+
+const fetch = require("node-fetch");
+const fs = require("fs");
+const unsplash = require("unsplash-js");
+
+const ACCESS_KEY = "mfpNJ7dKkJlWHZ9NFd6fyBhVSLiFZKC90D0dVN48JIs";
+const UTM_PARAMS = "utm_source=ScrollObserver2&utm_medium=referral";
+
+const CATEGORIES = [
+	"animals",
+	"architecture",
+	"cars",
+	"fashion",
+	"man",
+	"motorbikes",
+	"nature",
+	"sports",
+	"street",
+	"underwater",
+	"woman",
+];
+
+const api = unsplash.createApi({
+	accessKey: ACCESS_KEY,
+	fetch,
+});
+
+async function fetchPhotoData() {
+	let promises;
+	try {
+		promises = CATEGORIES.map(async (category) => {
+			console.info(`Will fetch category ${category}`);
+			return await api.search.getPhotos({
+				orientation: "portrait",
+				featured: true,
+				page: 1,
+				perPage: 30, // Undocumented max seems to be 30.
+				query: category,
+			});
+		});
+	} catch (e) {
+		console.error(e);
+	}
+	const responses = await Promise.all(promises);
+	let idsByCategory = {};
+	let dataByIds = {};
+	CATEGORIES.forEach((category, index) => {
+		let categoryPhotos = responses[index].response.results;
+		idsByCategory[category] = categoryPhotos.map((result) => result.id);
+		let categoryPhotoData = Object.values(categoryPhotos).reduce((acc, photo) => {
+			let result = {
+				acknowledgeUrl: photo.links.download_location,
+				description: photo.description,
+				id: photo.id,
+				likes: photo.likes,
+				src: photo.urls.regular,
+				unsplashLink: `https://unsplash.com?${UTM_PARAMS}`,
+				userLink: `${photo.user.links.html}?${UTM_PARAMS}`,
+				username: photo.user.username,
+				category,
+			};
+			acc[photo.id] = result;
+			return acc;
+		}, {});
+		dataByIds = { ...dataByIds, ...categoryPhotoData };
+	});
+	let categories = Object.keys(idsByCategory);
+	let result = {
+		categories,
+		idsByCategory,
+		dataByIds,
+	};
+	fs.writeFileSync("photos.json", JSON.stringify(result));
+	console.info("Result:", result);
+	console.info("We're done.");
+}
+
+fetchPhotoData();
+
+```
+
 ### Feed
 
-For the experiment, we'll need something to track. Unsplash has a wonderful API allowing us to search fetch a list of image data based on many search criteria. I've assembled a list of such images in loaded from multiple categories, like "Motorcycles, Landscape, Woman, Man, Beach..". 
+Using the photo data fetched, building a list is trivial. However, I wanted to add some additional functionality to ensure all categories have an equal chance to be displayed, with a certain level of randomization. 
 
-Our feed algorithm looks very simple:
+The algorithm should roughly:
 - randomize order of categories;
 - randomize order of images in each category;
 - take first image from first category, append to feed;
@@ -213,26 +302,23 @@ This allows us to distribute categories through the list nicely. Later I've disc
 
 ### Dashboard
 
-It's a very simple list of images marked from Top 1 to Top 20, also displaying the view duration in seconds below. Clicking on the image should scroll the feed to that image. 
+Let's build a very simple list of images marked from Top 1 to Top 20, also displaying the view duration in seconds below. Clicking on the image should scroll the feed to that image. 
 It also should have controls for pausing the tracking.
 
 ### Controller
 
-This one accumulates the view duration of all elements and sorts them. It should be capable of accepting a minimum view duration to track - so that when user scrolls past the list very fast, these images don't get recorded (they would only create noise in our results - user does not actually view them anyway).
-
-This one took some logic and I ran out of time, so DONT't look at the code.
+This one accumulates the view duration of all elements and sorts them. It should be capable of accepting a minimum view duration to track - so that when user scrolls past the list very fast, these images don't get recorded. That, I've found, would only creates noise in our results - user does not actually view these images (unless user is a machine) anyway.
 
 ## Results
 
-It works. I've tested the thing multiple times, and yes, if you forget you're being tracked, you get some results you:
+It works quite nicely. I've tested the thing multiple times, and yes, if you forget you're being tracked, you get some results you:
 - might not expect;
 - might expect but still be a bit ashamed of;
 - might be interested by.
 
-I am a ±30 year old male, riding an enduro motorcycle, so I can pretty much predict what categories I'll spend most time on. It's all very expected, as I am ruled by my prewired human brain. However, this is still very interesting stuff, and for my next experiment I might update the tracker, build it into a chrome plugin so I could check the view duration of any web content. Then I could track facebook feeds etc.
+I am a ±30 year old male, enjoying enduro motorcycling, so I can pretty much predict what categories I'll spend most time on. It's all very expected, as I am ruled by my prewired human brain. However, this is still very interesting stuff, and for my next experiment I might update the tracker, build it into a chrome plugin so I could check the view duration of any web content. Then I could track facebook feeds etc.
 
 And these feeds are not only photos, it contains political stuff etc. For now, the results are best shown in a video, so enjoy:
-
 
 Check the full code on (GitHub)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or (CodeSandbox[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/ViewDurationTracker/ViewDurationTracker.jsx:0-1643]). 
 
