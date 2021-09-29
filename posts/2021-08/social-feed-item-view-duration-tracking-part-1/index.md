@@ -199,9 +199,9 @@ At this point, we can  track the duration of a single item. We still need to dep
 
 For the experiment, we'll need something to track. Unsplash has a wonderful API allowing us to search fetch a list of image data based on many search criteria. I've assembled a list of such images fetched from multiple categories (see below). Then, transposed the json data a it as to avoid fiddling with the objects during run time. 
 
-Here's a (not very nicely built but working) node script:
+Here's a node script I scribbled to use the API:
 ```js
-// to run, install nodejs, name the file "getPhotos.js" and, from the project dir run:
+// To run, from script directory:
 // node ./getPhotos.js
 
 const fetch = require("node-fetch");
@@ -300,14 +300,32 @@ The algorithm should roughly:
 
 This allows us to distribute categories through the list nicely. Later I've discovered a bug (ocassionaly one category is shown multiple times), but had no more time to fix it or to add a test for it, at least in this iteration. 
 
-### Dashboard
-
-Let's build a very simple list of images marked from Top 1 to Top 20, also displaying the view duration in seconds below. Clicking on the image should scroll the feed to that image. 
-It also should have controls for pausing the tracking.
+See the code on:
+- (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/componentDemoViews/FeedDemoView.jsx]
+- (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Feed/Feed.jsx]
 
 ### Controller
 
 This one accumulates the view duration of all elements and sorts them. It should be capable of accepting a minimum view duration to track - so that when user scrolls past the list very fast, these images don't get recorded. That, I've found, would only creates noise in our results - user does not actually view these images (unless user is a machine) anyway.
+
+So, the plan is:
+- pass a `onViewDurationChange` callback / handler to the child Feed component;
+- when it's fired, take the `{viewDuration, imageSrc}` or similar;
+- put this data into an object containing list of viewed images;
+- if such `imageSrc` already exists in that list, add the `viewDuration` to the previous `viewDuration;
+- sort the results based on view duration to form a top 20 list.
+
+See the code on:
+- (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/Controller/Controller.jsx]
+- (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Controller/Controller.jsx]
+
+### Dashboard
+
+Top 20 images images should be displayed with their respective view duration in seconds at the botttom of the screen. Clicking on an image should scroll the feed to that image so the user can see it better when browsing the results. So, it also should have controls for pausing the tracking.
+
+See the code on:
+- (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/Dashboard/Dashboard.jsx]
+- (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Dashboard/Dashboard.jsx]
 
 ## Results
 
@@ -316,11 +334,42 @@ It works quite nicely. I've tested the thing multiple times, and yes, if you for
 - might expect but still be a bit ashamed of;
 - might be interested by.
 
-I am a ±30 year old male, enjoying enduro motorcycling, so I can pretty much predict what categories I'll spend most time on. It's all very expected, as I am ruled by my prewired human brain. However, this is still very interesting stuff, and for my next experiment I might update the tracker, build it into a chrome plugin so I could check the view duration of any web content. Then I could track facebook feeds etc.
+The app quickly run into limitations due to the nature of how I selected the images, lack of any statistical methods implemented to actually present results.
+
+The categories are very broad and non descriptive. For example, "nature" can range from a photo of a river valley, to stuff that is more like two color abstract painting. I prefered the latter, so to interpret results more meaningfully, I'd have to find better ways to categorise / describe the images.
+
+I had these search terms / categories in the test:
+```js
+	"categories": [
+		"animals",
+		"architecture",
+		"cars",
+		"fashion",
+		"man",
+		"motorbikes",
+		"nature",
+		"sports",
+		"street",
+		"underwater",
+		"woman"
+	]
+```
+
+Roughly, the top 5 images mostly tended to include a variation of `[nature, motorbikes, underwater, woman, fashion]`. 
+
+I am a ±30 year old male, enjoying enduro motorcycling, so it's all very expected.  However, this is still very interesting stuff, and for my next experiment I might update the tracker, build it into a chrome plugin so I could check the view duration of any web content. Then I could track facebook feeds etc.
+
+Also, I noticed I start scrolling faster when I get bored, and "preferred images in the end of session" get less view time than they would have gotten if they were seen in the beginning of the session.
 
 And these feeds are not only photos, it contains political stuff etc. For now, the results are best shown in a video, so enjoy:
 
-Check the full code on (GitHub)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or (CodeSandbox[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/ViewDurationTracker/ViewDurationTracker.jsx:0-1643]). 
+### Improvements to be made in next iteration, should there be one.
+
+- add categories below images in Dashboard;
+- save the data of each session in localStorage and build a statistical dashboard to better interpret results;
+- look for ways to adjust for increasing scroll speed as the session progresses.
+
+Check the full code on (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or (codesandbox[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/ViewDurationTracker/ViewDurationTracker.jsx:0-1643]). 
 
 Bye for now, have a great day. 
 Kasparas
