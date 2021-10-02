@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<link href="/css/main.css" rel="stylesheet" />
 		<link href="/css/prism-theme-retro.css" rel="stylesheet" />
@@ -9,7 +10,7 @@
 		<link rel="icon" href="/assets/favicon.png" sizes="any" />
 		<link rel="apple-touch-icon" href="/assets/favicon.png" />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500"
 			rel="stylesheet"
 		/>
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-115C9Z6LKN"></script>
@@ -43,7 +44,7 @@
 			</header>
 			<main class="content">
 				<h1>Test driven development and reading on how to simplify my code</h1>
-				<h2>Simple JS function</h2>
+				<div class="inner"><h2>Simple JS function</h2>
 <p>Today I've read a nice article about Test Driven Development by <a href="https://medium.com/@lee_85949">Lee Cheneler</a>:
 <a href="https://medium.com/@lee_85949/from-fizzbuzz-to-react-practical-test-driven-development-in-javascript-9fd05a4d1ad6">https://medium.com/@lee_85949/from-fizzbuzz-to-react-practical-test-driven-development-in-javascript-9fd05a4d1ad6</a></p>
 <p>Do read it, all examples in this post are taken from there. Remember these are my daily notes helping me to commit to learning something every day, not original content.</p>
@@ -76,7 +77,7 @@
 <p>The component:</p>
 <pre class="language-js"><code class="language-js"><span class="token comment">// http://localhost:8000/react-dev-demos/day1</span><br><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"react"</span><br><br><span class="token comment">// Refactored from class:</span><br><span class="token comment">/* <br>export class Counter extends React.Component {<br>  constructor() {<br>    super()<br>    this.increment = this.increment.bind(this)<br>    this.state = {<br>      count: 0,<br>    }<br>  }<br><br>  increment() {<br>    this.setState({<br>      count: this.state.count + 1,<br>    })<br>  }<br><br>  render() {<br>    return (<br>      &lt;><br>        &lt;span data-testid="count">Count: {this.state.count}&lt;/span><br>        &lt;button type="button" onClick={this.increment}><br>          Increment<br>        &lt;/button><br>      &lt;/><br>    )<br>  }<br>}<br>*/</span><br><br><span class="token comment">// To functional component:</span><br><br><span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">Counter</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>  <span class="token keyword">const</span> <span class="token punctuation">[</span>count<span class="token punctuation">,</span> setCount<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><br><br>  <span class="token keyword">const</span> <span class="token function-variable function">increment</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    <span class="token function">setCount</span><span class="token punctuation">(</span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token keyword">return</span> <span class="token punctuation">(</span><br>    <span class="token operator">&lt;</span><span class="token operator">></span><br>      <span class="token operator">&lt;</span>span data<span class="token operator">-</span>testid<span class="token operator">=</span><span class="token string">"count"</span><span class="token operator">></span>Count<span class="token operator">:</span> <span class="token punctuation">{</span>count<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span><br>      <span class="token operator">&lt;</span>button type<span class="token operator">=</span><span class="token string">"button"</span> onClick<span class="token operator">=</span><span class="token punctuation">{</span>increment<span class="token punctuation">}</span><span class="token operator">></span><br>        Increment<br>      <span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span><br>    <span class="token operator">&lt;</span><span class="token operator">/</span><span class="token operator">></span><br>  <span class="token punctuation">)</span><br><span class="token punctuation">}</span><br><br><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Day1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">return</span> Counter<br><span class="token punctuation">}</span></code></pre>
 <p>The main benefit I see, is you have to really understand the task before doing this, and plan by writing the tests. And no one can argue it's not OK to do it properly. It's TDD, so it's cool, everyone knows that.</p>
-
+</div>
 			</main>
 			<footer class="footer">
 				<div class="about">

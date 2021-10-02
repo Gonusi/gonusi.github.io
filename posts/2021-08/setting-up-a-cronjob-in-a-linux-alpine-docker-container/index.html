@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<link href="/css/main.css" rel="stylesheet" />
 		<link href="/css/prism-theme-retro.css" rel="stylesheet" />
@@ -9,7 +10,7 @@
 		<link rel="icon" href="/assets/favicon.png" sizes="any" />
 		<link rel="apple-touch-icon" href="/assets/favicon.png" />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500"
 			rel="stylesheet"
 		/>
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-115C9Z6LKN"></script>
@@ -43,7 +44,7 @@
 			</header>
 			<main class="content">
 				<h1>Setting up a cronjob in a docker container running alpine linux node image container</h1>
-				<p>After finishing a NextJS app running in our docker service stack, I had to make it register to our service health dashboard. It accepts a POST request with some data, which is out of the scope of this article. Anyway, all the other services were using  <em>curl</em> to post and report their health every other minute.</p>
+				<div class="inner"><p>After finishing a NextJS app running in our docker service stack, I had to make it register to our service health dashboard. It accepts a POST request with some data, which is out of the scope of this article. Anyway, all the other services were using  <em>curl</em> to post and report their health every other minute.</p>
 <p>Here's the registration script. Nothing fancy, just using curl to make a POST request to an address defined in an environment variable:</p>
 <pre class="language-bash"><code class="language-bash"><span class="token comment"># Docker prefils this with container ID, which can be used to access </span><br><span class="token comment"># this container in the network</span><br><span class="token assign-left variable">hostname</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /etc/hostname<span class="token variable">)</span></span><br><span class="token function">curl</span> --header <span class="token string">"Content-Type: application/json"</span> <span class="token punctuation">\</span><br>     --request POST <span class="token punctuation">\</span><br>     --data <span class="token string">'{"name": "some-service-name", "host": '</span>"<span class="token variable">${hostname}</span><span class="token string">"'}' \<br>     https://some-dashboard-url.com<br>echo "</span>cronjob has just finished executing register-to-dashboard script"</code></pre>
 <p>Here's my <code>Dockerfile</code>:</p>
@@ -64,7 +65,7 @@
 <p>If you need to stop the container</p>
 <pre class="language-bash"><code class="language-bash">docker stop <span class="token punctuation">{</span>container <span class="token function">id</span> or name<span class="token punctuation">}</span></code></pre>
 <p>So much fun, these cronjobs.</p>
-
+</div>
 			</main>
 			<footer class="footer">
 				<div class="about">
