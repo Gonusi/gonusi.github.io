@@ -13,7 +13,7 @@ description: Programming experiments, things I've learned about, weird javascrip
         {% endif %}
         <ul class="postTagList">
         {% for tag in post.data.tags %}
-            <li class="postTag"><a href="/tags/{{tag}}">{{tag}}</a></li>
+            <li class="postTag {% if tag == 'experiment' %}experiment{% endif %}"><a href="/tags/{{tag}}">{{tag}}</a></li>
         {% endfor %}
         </ul>
         <em class="date">{{ post.date | date: "%Y-%m-%d" }}</em>

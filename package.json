@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"develop": "npx @11ty/eleventy --serve",
 		"build": "eleventy",
 		"test": "jest --watchAll"
 	},

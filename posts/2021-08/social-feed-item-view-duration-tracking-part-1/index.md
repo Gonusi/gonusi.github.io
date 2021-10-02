@@ -2,17 +2,23 @@
 title: Track view duration of fake social network feed items using intersection observer. Part 1.
 description: A part of a series where we create a photo feed, and track the view duration of each item, displaying results in a real time dashboard. Should look cool, and show me my favorite pics.
 layout: layout.html
-tags: ["posts", "weekly challenge", "experiments", "cypress", "test driven development"]
+tags: ["posts", "weekly challenge", "experiment", "cypress", "test driven development"]
 date: 2021-08-11
 ---
 
 ## What we're gonna Build
 
-** Weekly challenge is for experiments, I reserve up to 7 hours from my week for those, including writing the blog. So there might be unfinished business below. You have been warned. **
+**Weekly challenge is for experiments, I reserve up to 7 hours from my week for those, including writing the blog. This is not production grade stuff. You have been warned.**
 
-Social networks and websites often have feeds where you scroll through content items. It's then common sense they would measure the view duration of each piece. This would greatly help in serving even more "similarly engaging, intelligence-stimulating content", because that's what we like to see, right? I've recently seen a movie, (The social dilemma)[https://www.google.com/search?q=imdb+the+social+dilemma] which talks about this stuff a lot. I don't agree with the narrative it makes social networks "evil", but I still enjoyjed it. 
+Social networks and websites often have feeds where you scroll through content items. It's then common sense they would measure the view duration of each piece. This would greatly help in serving even more "similarly engaging, intelligence-stimulating content", because that's what we like to see, right? I've recently seen a movie, [The social dilemma](https://www.google.com/search?q=imdb+the+social+dilemma) which talks about this stuff a lot. I don't agree with the narrative it makes social networks "evil", but I still enjoyjed it. 
 
 Let's build a feed of nice images and measure ourselves to see how the whole tracking thing can be built easily, and how the results look, real time. 
+
+To begin with, feel free to watch this demo of the final app. Or just leave it to the end. 
+
+<div class="videoWrapper">
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/LjVAYFTzb1I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 ## The app
 
@@ -23,7 +29,7 @@ Nothing takes away the fun better than a good, detailed plan. Let's use React, a
 - Dashboard - displays list of most popular content, and view duration
 - Controller - listens for callbacks with view duration for all items, can pass data to another component (dashboard)
 
-I will not present all the code here, as the experiments do get a bit complex. Feel free to check it on (github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or run it on (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7] which you will also find embedded on the bottom of this post.
+I will not present all the code here, as the stuff does get a bit lengthy. Feel free to check it on [github](https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer) or run it on [codesandbox](https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7).
 
 Let's discuss key parts and view the result. 
 
@@ -62,7 +68,9 @@ it("renders children inside a div", () => {
 });
 
 it("calls callback passing correct arguments", function () {
-  // I know I know. But cy.spy() only accepts [object, property] - let's keep it simple and refactor later if we have time. 
+  // Let's use window and not worry about it for once.
+  // cy.spy only accepst [object, property] so 
+  // let's not complicate our own lives for now.  
   window.callback = ({ viewDuration, properties }) => {
     expect(viewDuration).to.be.greaterThan(100);
     // Expect 200ms view duration, but allow up to 250ms 
@@ -90,7 +98,8 @@ it("calls callback passing correct arguments", function () {
   // Callback above contains more checks
   cy.get("@callback").should("have.been.called");
 
-  // Possibly the more "Cypress'y" way to do this for reference (but I don't like it):
+  // Possibly the more "Cypress'y" way to do this for reference:
+  // (I don't like it):
   // cy.get("@callback").should(
   //  "have.been.calledWithMatch",
   //  Cypress.sinon.match.number
@@ -111,14 +120,17 @@ import React, { useEffect, useRef, useReducer } from "react";
 
 const initialState = { lastEntryTime: 0, viewDuration: 0 };
 
-// Using reducer because my 3 simple rules of determining "will you get fucked up by the functional component" say I indeed will:
+// Using reducer because my 3 simple rules of determining "will you get f****d
+// up by the functional component" say I indeed will:
 // - Does it pass a callback to some function? // true
 // - Does the callback modify state ? // true
-// - Does the state modification relies on previous state? // true
-// When all 3 are true, you will have stale state problems due to JS closures, just manage the state in a reducer like this to avoid it.
-// The callback only dispatches actions, and does not need to know anything about the state, avoiding problems entirely
-// If in doubt, read the excellent article about it here. Read it all, and read it at least 3 times:
-// https://overreacted.io/a-complete-guide-to-useeffect/
+// - Does the state modification relies on previous state? // true When all 3
+//   are true, you will have stale state problems due to JS closures, just
+//   manage the state in a reducer like this to avoid it. The callback only
+//   dispatches actions, and does not need to know anything about the state,
+//   avoiding problems entirely If in doubt, read the excellent article about it
+//   here. Read it all, and read it at least 3 times:
+//   https://overreacted.io/a-complete-guide-to-useeffect/
 const reducer = (state, action) => {
   switch (action.type) {
     case "enterViewport": {
@@ -147,7 +159,8 @@ const ViewDurationTracker = ({
   const [state, dispatch] = useReducer(reducer, initialState);
   const elementRef = useRef();
 
-  // This gets called when interesection observer says "85% of element has entered or left the viewport"
+  // This gets called when interesection observer says "85% of element has
+  // entered or left the viewport"
   const intersectionCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -172,11 +185,10 @@ const ViewDurationTracker = ({
 
   useEffect(() => {
     if (state.viewDuration) {
-      console.log('VIEW DURATION CHANGE', state.viewDuration)
       // when view duration of this instance changes, call callback from parent
       onViewDurationMsChange?.({
-        viewDuration: state.viewDuration, // pass view duration
-        properties // pass properties we received from the parent back (it's gonna be {id: xxx} or similar)
+        viewDuration: state.viewDuration, 
+        properties // might be an {id}, might be anything else...
       });
     }
   }, [state.viewDuration]);
@@ -316,16 +328,16 @@ So, the plan is:
 - sort the results based on view duration to form a top 20 list.
 
 See the code on:
-- (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/Controller/Controller.jsx]
-- (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Controller/Controller.jsx]
+- [codesandbox](https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/Controller/Controller.jsx)
+- [Github](https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Controller/Controller.jsx)
 
 ### Dashboard
 
 Top 20 images images should be displayed with their respective view duration in seconds at the botttom of the screen. Clicking on an image should scroll the feed to that image so the user can see it better when browsing the results. So, it also should have controls for pausing the tracking.
 
 See the code on:
-- (codesandbox)[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/Dashboard/Dashboard.jsx]
-- (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Dashboard/Dashboard.jsx]
+- [codesandbox](https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/Dashboard/Dashboard.jsx)
+- [Github](https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer/blob/main/src/components/Dashboard/Dashboard.jsx)
 
 ## Results
 
@@ -369,7 +381,7 @@ And these feeds are not only photos, it contains political stuff etc. For now, t
 - save the data of each session in localStorage and build a statistical dashboard to better interpret results;
 - look for ways to adjust for increasing scroll speed as the session progresses.
 
-Check the full code on (Github)[https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer] or (codesandbox[https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/ViewDurationTracker/ViewDurationTracker.jsx:0-1643]). 
+Check the full code on [Github](https://github.com/Gonusi/in-browser-view-duration-tracking-using-intersection-observer) or[codesandbox](https://codesandbox.io/s/in-browser-feed-item-view-duration-tracking-using-intersection-observer-zxgi7?file=/src/components/ViewDurationTracker/ViewDurationTracker.jsx:0-1643]). 
 
 Bye for now, have a great day. 
 Kasparas
