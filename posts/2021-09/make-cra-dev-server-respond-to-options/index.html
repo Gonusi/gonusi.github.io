@@ -3,28 +3,45 @@
 		<link href="/css/main.css" rel="stylesheet" />
 		<link href="/css/prism-theme-retro.css" rel="stylesheet" />
 		<title>Make CRA dev server respond to CORS OPTIONS requests, as a gentleman should · TODO</title>
-		<meta name="description" content="Create React App allows you to configure a proxy server, modifying responses it makes. This can be useful for a lot of things, we'll use it to set up cross origin communication between two CRA apps running on same machine, different local domains."/>
+		<meta name="description" content="Create React App allows you to configure a proxy server, modifying responses it makes. This can be useful for a lot of things, we'll use it to set up cross origin communication between two CRA apps running on same machine, different local domains." />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+			rel="stylesheet"
+		/>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-115C9Z6LKN"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+
+			gtag("config", "G-115C9Z6LKN");
+		</script>
 	</head>
 	<body>
-		<header class="header">
-			<div class="blogInfo">
-				<div class="logo">Kasparas Anusauskas</div>
-				<div class="about">Personal development notes and experiments</div>
-			</div>
-			<nav class="nav">
-				<ul class="navList">
-					<li>
-						<a href="/"> Home </a>
-					</li>
-					<li>
-						<a href="/about">About</a>
-					</li>
-				</ul>
-			</nav>
-		</header>
-		<main class="wrapper">
-			<h1>Make CRA dev server respond to CORS OPTIONS requests, as a gentleman should</h1>
-			<p>If you have ever wished to access the dev server of Create React App, your'e in luck. While working on a login page for a custom authorization server, I needed our OAuth client (SPA app) to return <code>204 OK</code> response with correct CORS headers even in development mode. Essentially, I wanted two CRA apps running on different ports to be able to talk to each other using cross origin POST requests.</p>
+		<div class="wrapper">
+			<header class="header">
+				<div class="blogInfo">
+					<div class="logo">Kasparas Anusauskas</div>
+					<div class="about">Personal development notes and experiments</div>
+				</div>
+				<nav class="nav">
+					<ul class="navList">
+						<li>
+							<a href="/"> Home </a>
+						</li>
+						<li>
+							<a href="/about">About</a>
+						</li>
+					</ul>
+				</nav>
+			</header>
+			<main class="content">
+				<h1>Make CRA dev server respond to CORS OPTIONS requests, as a gentleman should</h1>
+				<p>If you have ever wished to access the dev server of Create React App, your'e in luck. While working on a login page for a custom authorization server, I needed our OAuth client (SPA app) to return <code>204 OK</code> response with correct CORS headers even in development mode. Essentially, I wanted two CRA apps running on different ports to be able to talk to each other using cross origin POST requests.</p>
 <p>Development server (also based on CRA) with login page running @ https://login.app:3000:</p>
 <pre class="language-text"><code class="language-text">POST `https://client.app:3001/login-callback?code=123?state=456`</code></pre>
 <p>Client App must respond:</p>
@@ -51,12 +68,14 @@
 </ul>
 <p>Have a great day, reader. End.</p>
 
-		</main>
-		<footer class="footer">
-			<div class="about">
-				<div><strong>Kasparas Anusauskas</strong></div>
-				<a href="https://www.linkedin.com/in/kasparas-anusauskas">LinkedIn</a>
-			</div>
-		</footer>
+			</main>
+			<footer class="footer">
+				<div class="about">
+					<div><strong>Kasparas Anusauskas</strong></div>
+					<a href="https://www.linkedin.com/in/kasparas-anusauskas">LinkedIn</a>
+				</div>
+			</footer>
+		</div>
+		<!-- <div class="cookieBanner hidden"><div>Please note I'm using Google Analytics. This means this website is using all of the evil cookies you hear about. Only continue browsing if you're OK with that.</div> <button>I understand</button></div> -->
 	</body>
 </html>
