@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="/css/main.css" rel="stylesheet" />
+		<link href="/css/prism-theme-retro.css" rel="stylesheet" />
+		<title>Access Express and CRA (Create React app) development server routes on same localhost port · Kasparas Anusauskas</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Need to serve some static html's using Express for landing routes + serve a React app, and access this on one single local port for development? Don't use CRA's "proxy", instead use your Express backend to proxy requests to CRA dev server when needed." />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="icon" href="/assets/favicon.png" sizes="any" />
+		<link rel="apple-touch-icon" href="/assets/favicon.png" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500"
+			rel="stylesheet"
+		/>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-115C9Z6LKN"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+
+			gtag("config", "G-115C9Z6LKN");
+		</script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<header class="header">
+				<div class="blogInfo">
+					<div class="logo">Kasparas Anusauskas</div>
+					<div class="about">Personal development notes and experiments</div>
+				</div>
+				<nav class="nav">
+					<ul class="navList">
+						<li>
+							<a href="/"> Home </a>
+						</li>
+						<li>
+							<a href="/about">About</a>
+						</li>
+					</ul>
+				</nav>
+			</header>
+			<main class="content">
+				<h1>Access Express and CRA (Create React app) development server routes on same localhost port</h1>
+				<div class="inner"><p>If you have a fullstack app where, say, landing routes are served using Express, and there's an inner &quot;App&quot; made using react, it's comfortable to develop both on the same port. Example scenario:</p>
+<ol>
+<li><code>http://localhost:3000/app</code> &lt;- Create react app web development server configured with <code>&quot;homepage&quot;: &quot;app&quot;</code> in <code>package.json</code></li>
+<li><code>http://localhost:4000/api</code>  &lt;- Express based API routes</li>
+<li><code>http://localhost:4000/landing</code> &lt;- Express based static landing pages</li>
+</ol>
+<p>Create react app has a proxy feature allowing us to seamlessly work on <code>http://localhost:3000/app</code> and access the API without any CORS issues. To configure it, add &quot;proxy&quot; to the CRA project's <code>package.json</code>:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span><br>   ...<span class="token punctuation">,</span><br>   <span class="token property">"homepage"</span><span class="token operator">:</span> <span class="token string">"/app"</span><span class="token punctuation">,</span><br>   <span class="token property">"proxy"</span><span class="token operator">:</span> <span class="token string">"http://localhost:4000"</span> &lt;-- add this<br><span class="token punctuation">}</span></code></pre>
+<p>With this config, all requests made to <code>https://localhost:3000/api</code>, <strong>except those containing <code>Accept: text/html</code> header</strong>, will be proxied to <code>https://localhost:4000</code> (our backend server).</p>
+<p>However, by design this proxying will not work for landing pages (note the <code>Accept: text/html</code> header exception). The alternative way to configure &quot;proxy&quot; for CRA - the <code>setupProxy.js</code> will not help in this case too.</p>
+<p>Instead, consider proxying the other way:</p>
+<ul>
+<li>Don't proxy CRA -&gt; Express backend</li>
+<li>Proxy Express backend -&gt; CRA</li>
+</ul>
+<pre class="language-js"><code class="language-js"><span class="token comment">// Express code</span><br><span class="token keyword">const</span> request <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'request'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"/app/*"</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    req<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">request</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">http://localhost:3000</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>req<span class="token punctuation">.</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>We take the <code>req</code> object, pipe it to the <code>request</code> library with makes identical request to another URL. Then the result is piped back to response.</p>
+<p>Our custom Express server has no limitations regarding any headers, so will successfully proxy the request.</p>
+<h2>Full example and use case</h2>
+<p>Let's create a basic fullstack app. Obviously (but not so obviously when I was first starting 10 years ago..), you'll
+need <a href="https://nodejs.org/en/download/">Node</a>. Begin by creating
+an <a href="https://expressjs.com/en/starter/hello-world.html">Express Hello world app</a>.</p>
+<h3>Express server</h3>
+<p>From inside directory <code>fullstack</code> (any name will of course work), set up a basic Express app + add <code>request</code> http client package:</p>
+<pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> express request</code></pre>
+<p>This will generate a <code>package.json</code> file similar to this:</p>
+<pre class="language-json"><code class="language-json"><span class="token comment">// fullstack/package.json</span><br><br><span class="token punctuation">{</span><br>  <span class="token property">"dependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span><br>    <span class="token property">"request"</span><span class="token operator">:</span> <span class="token string">"^2.88.2"</span><span class="token punctuation">,</span><br>    <span class="token property">"express"</span><span class="token operator">:</span> <span class="token string">"^4.17.2"</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span><br></code></pre>
+<p>Create a <code>server.js</code> file with the &quot;Hello world&quot; app contents:</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// fullstack/server.js</span><br><br><span class="token keyword">const</span> express <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'express'</span><span class="token punctuation">)</span><br><span class="token keyword">const</span> app <span class="token operator">=</span> <span class="token function">express</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br><span class="token keyword">const</span> port <span class="token operator">=</span> <span class="token number">4000</span><br><br>app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    res<span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token string">'Hello World!'</span><span class="token punctuation">)</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><br><br>app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span>port<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><br>    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Example app listening on port </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>port<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
+<p>Your directory structure should look like this:</p>
+<p><img src="../../../assets/posts/2022-01/express-and-cra-dev-server-on-shared-domain-and-port/dir_structure_1.png" alt="Directory structure"></p>
+<p>To test your Express app, from <code>fullstack</code> directory run:</p>
+<pre class="language-bash"><code class="language-bash">node server.js</code></pre>
+<p>Visit <a href="http://localhost:4000">http://localhost:4000</a>, you should see &quot;Hello world&quot; text content returned by the Express server. Close the server by pressing <code>CTRL + C</code> in the terminal for now.</p>
+<h3>Create react app &quot;client&quot; setup</h3>
+<p>From &quot;fullstack&quot; directory, create a React app called &quot;client&quot;:</p>
+<pre class="language-bash"><code class="language-bash">npx create-react-app client</code></pre>
+<p>Your directory &quot;fullstack&quot; should now look like this:</p>
+<p><img src="../../../assets/posts/2022-01/express-and-cra-dev-server-on-shared-domain-and-port/dir_structure_2.png" alt="Directory structure"></p>
+<p>Configure CRA to have homepage of <code>/app</code>. This is not strictly required if you know what you're doing, but out of scope of this article.</p>
+<pre class="language-json"><code class="language-json"><span class="token comment">// fullstack/client/package.json</span><br><span class="token punctuation">{</span><br>  ...<span class="token punctuation">,</span><br>  <span class="token property">"homepage"</span><span class="token operator">:</span> <span class="token string">"/app"</span><br><span class="token punctuation">}</span>                                               <br></code></pre>
+<p>Start the CRA dev server, from the <code>fullstack/client</code> directory:</p>
+<pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run dev</code></pre>
+<p>Visit <a href="http://localhost:3000/app">http://localhost:3000/app</a> and you should see a basic react template app.</p>
+<h3>Configure Express proxy</h3>
+<p>Now we need to proxy <code>http://localhost:4000/app/*</code> to the CRA server running on port 3000. In <code>fullstack/server.js</code>
+containing the &quot;Hello world&quot; Express code, add some lines:</p>
+<pre class="language-js"><code class="language-js">app<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"/app/*"</span><span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">req<span class="token punctuation">,</span> res</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    console<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Proxying to localhost:3000</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>req<span class="token punctuation">.</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    req<span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">request</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">http://localhost:3000</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>req<span class="token punctuation">.</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Why <code>/app/*</code> with the wildcard, instead of just <code>/app</code> ? CRA will need to serve some static assets, like js files, stylesheets, favicons... Requests to all of them need to be proxied to the CRA dev server.</p>
+<h3>Testing it all out</h3>
+<p>The steps:</p>
+<ol>
+<li>make sure your CRA dev server is still running by visiting http://localhost:3000/app (should open demo react app);</li>
+<li>start the Express server again by running <code>node server.js</code> from the  <code>fullstack</code> directory, check if <a href="http://localhost:4000">http://localhost:4000</a> is still showing &quot;Hello world&quot; message;</li>
+</ol>
+<ol start="3">
+<li>access <a href="http://localhost:4000/app/hello">http://localhost:4000/app/hello</a>.</li>
+</ol>
+<p>In the 3rd step, what should  happen is:</p>
+<ol>
+<li>Express will get a request to <code>http://localhost:4000/app/hello</code></li>
+<li><code>get</code> handler for <code>http://localhost:4000/app/*</code> will catch it and run our proxying logic</li>
+<li><code>request</code> library will make request to <code>http://localhost:3000/app/hello</code></li>
+<li>CRA dev server will return index.html contents</li>
+<li>the html contents will be piped to Express response</li>
+<li>you will get the proxied react page, on the port of Express server</li>
+</ol>
+<p>Hope this makes sense.</p>
+<p>Further reading:</p>
+<ul>
+<li><a href="https://expressjs.com/en/starter/hello-world.html">Express hello world</a></li>
+<li><a href="https://create-react-app.dev/docs/proxying-api-requests-in-development/">Create React App proxy</a></li>
+<li><a href="https://www.becomebetterprogrammer.com/what-does-pipe-mean-in-node-js-how-to-use-it-practical-guide/">A useful blog post about Node .pipe()</a></li>
+<li><a href="https://nodejs.org/en/knowledge/advanced/streams/how-to-use-stream-pipe/">More docs on .pipe() from nodejs.org</a></li>
+</ul>
+<p>Have a great day, reader. End.</p>
+</div>
+			</main>
+			<footer class="footer">
+				<div class="about">
+					<div><strong>Kasparas Anusauskas</strong></div>
+					<a href="https://www.linkedin.com/in/kasparas-anusauskas">LinkedIn</a>
+				</div>
+			</footer>
+		</div>
+		<!-- <div class="cookieBanner hidden"><div>Please note I'm using Google Analytics. This means this website is using all of the evil cookies you hear about. Only continue browsing if you're OK with that.</div> <button>I understand</button></div> -->
+	</body>
+</html>
