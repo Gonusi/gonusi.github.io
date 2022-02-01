@@ -1,6 +1,6 @@
 ---
 title: Learning to (kind of) enjoy test driven development in JS with simpler tests
-description: TDD encorces good practices - including actually making your components easily testable without duplicating their functionality in test code and and, having broken tests after minor(est)  reworks.  
+description: TDD enforces good practices - including actually making your components easily testable without duplicating their functionality in test code and, having broken tests after minor(est)  reworks.  
 layout: layout.html
 tags: ["posts", "daily", "code style"]
 date: 2021-01-04

@@ -329,11 +329,19 @@ a {
 }
 
 ul, ol {
+	padding-left: 1em;
 	li {
 		line-height: 30px;
-		margin-bottom: 18px;
+		margin-bottom: 0px;
 	}
 }
+
+p code {
+	background: #f0f0f0;
+	padding: 2px 4px;
+	border-radius: 4px;
+}
+
 
 .cookieBanner {
 	box-shadow: 10px 10px 0px rgba(0,0,0,0.15);
