@@ -51,7 +51,8 @@ Simple stuff. Yet when I tried to *test-driven-develop-it* I found testing it is
 
 Fortunately, we now have [Cypress](https://www.cypress.io/) which renders tests in a real browser. Lately, it can even render react components for unit testing without having any kind of "app". I'll make sure to write about it later. 
 
-```js
+{% raw %}
+```javascript
 // To run:
 // npx cypress open-ct
 import React from "react";
@@ -108,6 +109,7 @@ it("calls callback passing correct arguments", function () {
   // );
 });
 ```
+{% endraw %}
 
 And that's the test. I was blown away by comparing:
 - my thoughts on how much trouble it is gonna be to write it
@@ -115,7 +117,8 @@ And that's the test. I was blown away by comparing:
 
 After having the test, the component itself was very easy too. We're building on the shoulder of giants people, and using the (Intersection Observer API)[https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API].
 
-```js
+{% raw %}
+```javascript
 import React, { useEffect, useRef, useReducer } from "react";
 
 const initialState = { lastEntryTime: 0, viewDuration: 0 };
@@ -202,6 +205,7 @@ const ViewDurationTracker = ({
 
 export default ViewDurationTracker;
 ```
+{% endraw %}
 
 At this point, we can  track the duration of a single item. We still need to deploy a swarm of these trackers on a fake "feed" of images, aggregate all their view durations as the user scrolls through and display the data. 
 

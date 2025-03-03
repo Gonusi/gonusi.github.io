@@ -57,13 +57,55 @@ npm run test
 Here's the test:
 
 ```js
-{% include excercises/_tdd-function.test.js -%}
+const { fizzbuzz } = require("./_tdd-function");
+
+// Step 1
+it("should return the numbers passed in that are not divisable by 3 or 5", () => {
+    expect(fizzbuzz(1)).toBe(1);
+    expect(fizzbuzz(2)).toBe(2);
+    expect(fizzbuzz(4)).toBe(4);
+    expect(fizzbuzz(7)).toBe(7);
+    expect(fizzbuzz(11)).toBe(11);
+});
+
+// Step 2
+it("should return 'fizz' if the number passed in is divisable by 3 ", () => {
+    expect(fizzbuzz(3)).toBe("fizz");
+    expect(fizzbuzz(6)).toBe("fizz");
+    expect(fizzbuzz(9)).toBe("fizz");
+    expect(fizzbuzz(12)).toBe("fizz");
+});
+
+// Step 3
+it("should return 'fuzz' if the number passed in is divisable by 5 ", () => {
+    expect(fizzbuzz(5)).toBe("buzz");
+    expect(fizzbuzz(10)).toBe("buzz");
+    // expect(fizzbuzz(15)).toBe("buzz"); <-- Too early for that, 15 is divisable both by 3 and 5...
+    expect(fizzbuzz(20)).toBe("buzz");
+});
+
+// Step 4
+it("should return 'fizzbuzz' if the number passed in is divisable by 3 and 5 ", () => {
+    expect(fizzbuzz(15)).toBe("fizzbuzz");
+    expect(fizzbuzz(30)).toBe("fizzbuzz");
+    expect(fizzbuzz(45)).toBe("fizzbuzz");
+});
 ```
 
 And here's the function:
 
 ```js
-{% include excercises/_tdd-function.js -%}
+const fizzbuzz = (num) => {
+    // Could write (num % 15 === 0) which sounds clever but I think is less descriptive
+    if (num % 3 === 0 && num % 5 === 0) return "fizzbuzz";
+    if (num % 3 === 0) return "fizz";
+    if (num % 5 === 0) return "buzz";
+
+    return num;
+};
+
+module.exports = { fizzbuzz };
+
 ```
 
 You write one test, and implement the functionality. Then move to another. It's super pleasant and simple.
@@ -75,13 +117,88 @@ Principle is the same with a react component. There's a lot more trouble in prep
 The test:
 
 ```js
-{% include excercises/_tdd-react-component.test.js -%}
+// http://localhost:8000/react-dev-demos/day1
+import React, { useState } from "react"
+
+// Refactored from class:
+/* 
+export class Counter extends React.Component {
+  constructor() {
+    super()
+    this.increment = this.increment.bind(this)
+    this.state = {
+      count: 0,
+    }
+  }
+
+  increment() {
+    this.setState({
+      count: this.state.count + 1,
+    })
+  }
+
+  render() {
+    return (
+      <>
+        <span data-testid="count">Count: {this.state.count}</span>
+        <button type="button" onClick={this.increment}>
+          Increment
+        </button>
+      </>
+    )
+  }
+}
+*/
+
+// To functional component:
+
+export const Counter = () => {
+    const [count, setCount] = useState(0)
+
+    const increment = () => {
+        setCount(count + 1)
+    }
+
+    return (
+        <>
+            <span data-testid="count">Count: {count}</span>
+            <button type="button" onClick={increment}>
+                Increment
+            </button>
+        </>
+    )
+}
+
+export default function Day1() {
+    return Counter
+}
+
 ```
 
 The component:
 
 ```js
-{% include excercises/_tdd-react-component.js -%}
+import React from "react";
+import { render, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
+import { Counter } from "./_tdd-react-component";
+
+it("should display the start count as 0", () => {
+    const { getByTestId } = render(<Counter />);
+
+    expect(getByTestId("count")).toHaveTextContent("Count: 0");
+});
+
+it("should increase the count by 1 when increase button is clicked", () => {
+    const { getByTestId, getByText } = render(<Counter />);
+
+    fireEvent.click(getByText("Increment"));
+    expect(getByTestId("count")).toHaveTextContent("Count: 1");
+
+    fireEvent.click(getByText("Increment"));
+    expect(getByTestId("count")).toHaveTextContent("Count: 2");
+});
+
 ```
 
 The main benefit I see, is you have to really understand the task before doing this, and plan by writing the tests. And no one can argue it's not OK to do it properly. It's TDD, so it's cool, everyone knows that.
