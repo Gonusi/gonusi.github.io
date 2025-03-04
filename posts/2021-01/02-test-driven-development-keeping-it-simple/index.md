@@ -145,7 +145,6 @@ const CharSelect = ({ lowercaseUrl, uppercaseUrl }) => {
 };
 
 export default CharSelect;
-
 ```
 {% endraw %}
 
