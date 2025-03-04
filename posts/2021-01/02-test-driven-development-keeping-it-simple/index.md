@@ -61,6 +61,7 @@ Any way, it's the first time I'm actually looking forward to it.
 
 Here's the test:
 
+{% raw %}
 ```js
 import React, { useEffect, useReducer, useState } from "react";
 import axios from "axios";
@@ -146,9 +147,11 @@ const CharSelect = ({ lowercaseUrl, uppercaseUrl }) => {
 export default CharSelect;
 
 ```
+{% endraw %}
 
 And here's the function:
 
+{% raw %}
 ```js
 import React, { useEffect, useReducer, useState } from "react";
 import axios from "axios";
@@ -234,3 +237,4 @@ const CharSelect = ({ lowercaseUrl, uppercaseUrl }) => {
 export default CharSelect;
 
 ```
+{% endraw %}

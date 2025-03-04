@@ -50,6 +50,7 @@ my-app/
 ```
 
 File contents should be:
+{% raw %}
 ```js
 // src/setupProxy.js
 // do npm install --save-dev cors to install the cors package
@@ -68,6 +69,7 @@ module.exports = (app) => {
 }
 
 ```
+{% endraw %}
 
 And that's it. You'll get the response you need. To recap what we have done:
 
@@ -78,6 +80,7 @@ And that's it. You'll get the response you need. To recap what we have done:
 
 Actually, we could avoid using any imported package at all. We could just create a little middleware ourselves:
 
+{% raw %}
 ```js
 // src/setupProxy.js
 module.exports = (app) => {
@@ -89,6 +92,7 @@ module.exports = (app) => {
     });
 }
 ```
+{% endraw %}
 
 So that's it. This is great stuff, and you can definitely do more than set up CORS with it. FIY, I do not know if this is really a proxy server sitting in between CRA dev server and you, or are we actually configuring the instance of dev server. CRA says we indeed are configuring the dev server instance.
 

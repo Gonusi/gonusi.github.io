@@ -56,6 +56,7 @@ npm run test
 
 Here's the test:
 
+{% raw %}
 ```js
 const { fizzbuzz } = require("./_tdd-function");
 
@@ -91,9 +92,11 @@ it("should return 'fizzbuzz' if the number passed in is divisable by 3 and 5 ", 
     expect(fizzbuzz(45)).toBe("fizzbuzz");
 });
 ```
+{% endraw %}
 
 And here's the function:
 
+{% raw %}
 ```js
 const fizzbuzz = (num) => {
     // Could write (num % 15 === 0) which sounds clever but I think is less descriptive
@@ -105,8 +108,8 @@ const fizzbuzz = (num) => {
 };
 
 module.exports = { fizzbuzz };
-
 ```
+{% endraw %}
 
 You write one test, and implement the functionality. Then move to another. It's super pleasant and simple.
 
@@ -116,6 +119,7 @@ Principle is the same with a react component. There's a lot more trouble in prep
 
 The test:
 
+{% raw %}
 ```js
 // http://localhost:8000/react-dev-demos/day1
 import React, { useState } from "react"
@@ -172,11 +176,12 @@ export const Counter = () => {
 export default function Day1() {
     return Counter
 }
-
 ```
+{% endraw %}
 
 The component:
 
+{% raw %}
 ```js
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
@@ -198,7 +203,7 @@ it("should increase the count by 1 when increase button is clicked", () => {
     fireEvent.click(getByText("Increment"));
     expect(getByTestId("count")).toHaveTextContent("Count: 2");
 });
-
 ```
+{% endraw %}
 
 The main benefit I see, is you have to really understand the task before doing this, and plan by writing the tests. And no one can argue it's not OK to do it properly. It's TDD, so it's cool, everyone knows that.

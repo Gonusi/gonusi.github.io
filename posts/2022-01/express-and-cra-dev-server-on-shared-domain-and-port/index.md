@@ -29,6 +29,7 @@ Instead, consider proxying the other way:
 - Don't proxy CRA -> Express backend
 - Proxy Express backend -> CRA
 
+{% raw %}
 ```js
 // Express code
 const request = require('request');
@@ -37,6 +38,7 @@ app.get("/app/*", function (req, res) {
     req.pipe(request(`http://localhost:3000${req.path}`)).pipe(res);
 });
 ```
+{% endraw %}
 
 We take the `req` object, pipe it to the `request` library with makes identical request to another URL. Then the result is piped back to response. 
 
@@ -72,6 +74,7 @@ This will generate a `package.json` file similar to this:
 
 Create a `server.js` file with the "Hello world" app contents:
 
+{% raw %}
 ```js
 // fullstack/server.js
 
@@ -87,6 +90,7 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
 ```
+{% endraw %}
 
 Your directory structure should look like this:
 
@@ -136,12 +140,14 @@ Visit [http://localhost:3000/app](http://localhost:3000/app) and you should see 
 Now we need to proxy `http://localhost:4000/app/*` to the CRA server running on port 3000. In `fullstack/server.js`
 containing the "Hello world" Express code, add some lines:
 
+{% raw %}
 ```js
 app.get("/app/*", function (req, res) {
     console.info(`Proxying to localhost:3000${req.path}`);
     req.pipe(request(`http://localhost:3000${req.path}`)).pipe(res);
 });
 ```
+{% endraw %}
 
 Why `/app/*` with the wildcard, instead of just `/app` ? CRA will need to serve some static assets, like js files, stylesheets, favicons... Requests to all of them need to be proxied to the CRA dev server. 
 

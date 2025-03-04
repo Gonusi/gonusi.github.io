@@ -216,6 +216,7 @@ At this point, we can  track the duration of a single item. We still need to dep
 For the experiment, we'll need something to track. Unsplash has a wonderful API allowing us to search fetch a list of image data based on many search criteria. I've assembled a list of such images fetched from multiple categories (see below). Then, transposed the json data a it as to avoid fiddling with the objects during run time. 
 
 Here's a node script I scribbled to use the API:
+{% raw %}
 ```js
 // To run, from script directory:
 // node ./getPhotos.js
@@ -297,8 +298,8 @@ async function fetchPhotoData() {
 }
 
 fetchPhotoData();
-
 ```
+{% endraw %}
 
 ### Feed
 
@@ -355,6 +356,7 @@ The app quickly run into limitations due to the nature of how I selected the ima
 The categories are very broad and non descriptive. For example, "nature" can range from a photo of a river valley, to stuff that is more like two color abstract painting. I prefered the latter, so to interpret results more meaningfully, I'd have to find better ways to categorise / describe the images.
 
 I had these search terms / categories in the test:
+{% raw %}
 ```js
 	"categories": [
 		"animals",
@@ -370,6 +372,7 @@ I had these search terms / categories in the test:
 		"woman"
 	]
 ```
+{% endraw %}
 
 Roughly, the top 5 images mostly tended to include a variation of `[nature, motorbikes, underwater, woman, fashion]`. 
 
