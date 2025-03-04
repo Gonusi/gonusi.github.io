@@ -49,24 +49,75 @@
 				<h1>Setting up a cronjob in a docker container running alpine linux node image container</h1>
 				<div class="inner"><p>After finishing a NextJS app running in our docker service stack, I had to make it register to our service health dashboard. It accepts a POST request with some data, which is out of the scope of this article. Anyway, all the other services were using  <em>curl</em> to post and report their health every other minute.</p>
 <p>Here's the registration script. Nothing fancy, just using curl to make a POST request to an address defined in an environment variable:</p>
-<pre class="language-bash"><code class="language-bash"><span class="token comment"># Docker prefils this with container ID, which can be used to access </span><br><span class="token comment"># this container in the network</span><br><span class="token assign-left variable">hostname</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /etc/hostname<span class="token variable">)</span></span><br><span class="token function">curl</span> --header <span class="token string">"Content-Type: application/json"</span> <span class="token punctuation">\</span><br>     --request POST <span class="token punctuation">\</span><br>     --data <span class="token string">'{"name": "some-service-name", "host": '</span>"<span class="token variable">${hostname}</span><span class="token string">"'}' \<br>     https://some-dashboard-url.com<br>echo "</span>cronjob has just finished executing register-to-dashboard script"</code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token comment"># Docker prefils this with container ID, which can be used to access </span>
+<span class="token comment"># this container in the network</span>
+<span class="token assign-left variable">hostname</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /etc/hostname<span class="token variable">)</span></span>
+<span class="token function">curl</span> <span class="token parameter variable">--header</span> <span class="token string">"Content-Type: application/json"</span> <span class="token punctuation">\</span>
+     <span class="token parameter variable">--request</span> POST <span class="token punctuation">\</span>
+     <span class="token parameter variable">--data</span> <span class="token string">'{"name": "some-service-name", "host": '</span><span class="token string">"<span class="token variable">${hostname}</span>"</span>'<span class="token punctuation">}</span>' <span class="token punctuation">\</span>
+     https://some-dashboard-url.com
+<span class="token builtin class-name">echo</span> <span class="token string">"cronjob has just finished executing register-to-dashboard script"</span></code></pre>
 <p>Here's my <code>Dockerfile</code>:</p>
-<pre class="language-bash"><code class="language-bash"><span class="token comment"># Dockerfile</span><br>FROM node:alpine AS runner<br>ENV NODE_ENV production<br>WORKDIR /<br>RUN apk <span class="token function">add</span> --no-cache <span class="token function">curl</span><br><span class="token comment"># move script to predefined 1min directory, change permissions, schedule it for running</span><br><span class="token comment"># YES, script needs to NOT have .sh file extension</span><br>COPY  /register-to-dashboard.sh /etc/periodic/1min/register-to-dashboard<br>RUN <span class="token function">chmod</span> +x /etc/periodic/1min/register-to-dashboard<br>RUN <span class="token builtin class-name">echo</span> <span class="token string">"* * * * * run-parts /etc/periodic/1min"</span> <span class="token operator">>></span> /etc/crontabs/root<br>ENTRYPOINT <span class="token punctuation">[</span> <span class="token string">"startup.sh"</span> <span class="token punctuation">]</span></code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token comment"># Dockerfile</span>
+FROM node:alpine AS runner
+ENV NODE_ENV production
+WORKDIR /
+RUN apk <span class="token function">add</span> --no-cache <span class="token function">curl</span>
+<span class="token comment"># move script to predefined 1min directory, change permissions, schedule it for running</span>
+<span class="token comment"># YES, script needs to NOT have .sh file extension</span>
+COPY  /register-to-dashboard.sh /etc/periodic/1min/register-to-dashboard
+RUN <span class="token function">chmod</span> +x /etc/periodic/1min/register-to-dashboard
+RUN <span class="token builtin class-name">echo</span> <span class="token string">"* * * * * run-parts /etc/periodic/1min"</span> <span class="token operator">>></span> /etc/crontabs/root
+ENTRYPOINT <span class="token punctuation">[</span> <span class="token string">"startup.sh"</span> <span class="token punctuation">]</span></code></pre>
 <p>And here's the <code>startup.sh</code> file:</p>
-<pre class="language-bash"><code class="language-bash"><span class="token comment"># startup.sh</span><br><span class="token comment"># make sure errors stop execution</span><br><span class="token builtin class-name">set</span> -e<br><span class="token comment"># start the cronjob</span><br>crond -f -l <span class="token number">8</span> <span class="token operator">&amp;</span><br><span class="token comment"># start nextjs using our own command from package.json...</span><br><span class="token function">npm</span> run start:production</code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token comment"># startup.sh</span>
+<span class="token comment"># make sure errors stop execution</span>
+<span class="token builtin class-name">set</span> <span class="token parameter variable">-e</span>
+<span class="token comment"># start the cronjob</span>
+crond <span class="token parameter variable">-f</span> <span class="token parameter variable">-l</span> <span class="token number">8</span> <span class="token operator">&amp;</span>
+<span class="token comment"># start nextjs using our own command from package.json...</span>
+<span class="token function">npm</span> run start:production</code></pre>
 <p>Alpine linux already comes set up to run cronjobs. It's directory <code>/etc/periodic</code> already contain directories <strong>15min</strong>, <strong>daily</strong>, <strong>hourly</strong>, <strong>monthly</strong>, <strong>weekly</strong>.</p>
 <p>Putting a shell script, with <strong>.sh extension removed</strong> (weird I know) into one of these directories, and starting the cronjobs using <code>crond -f -l 8</code> will execute your script at the specified frequency.</p>
 <p>You can run <code>crontab -l</code> to check the table specifying this behaviour:</p>
-<pre class="language-bash"><code class="language-bash"><span class="token function">crontab</span> -l<br><span class="token comment"># do daily/weekly/monthly maintenance</span><br><span class="token comment"># min	hour	day	    month	weekday	command</span><br>*/15	*	    *	    *	    *	    run-parts /etc/periodic/15min<br><span class="token number">0</span>	    *	    *	    *	    *	    run-parts /etc/periodic/hourly<br><span class="token number">0</span>	    <span class="token number">2</span>	    *	    *	    *	    run-parts /etc/periodic/daily<br><span class="token number">0</span>	    <span class="token number">3</span>	    *	    *	    <span class="token number">6</span>	    run-parts /etc/periodic/weekly<br><span class="token number">0</span>	    <span class="token number">5</span>	    <span class="token number">1</span>	    *	    *	    run-parts /etc/periodic/monthly<br><span class="token comment"># after our Dockerfile runs:</span><br><span class="token comment"># RUN echo "* * * * * run-parts /etc/periodic/1min" >> /etc/crontabs/root</span><br><span class="token comment"># we'll have a non-default line here:</span><br>*	    *	    *	    *	    *	    run-parts /etc/periodic/1min</code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token function">crontab</span> <span class="token parameter variable">-l</span>
+<span class="token comment"># do daily/weekly/monthly maintenance</span>
+<span class="token comment"># min	hour	day	    month	weekday	command</span>
+*/15	*	    *	    *	    *	    run-parts /etc/periodic/15min
+<span class="token number">0</span>	    *	    *	    *	    *	    run-parts /etc/periodic/hourly
+<span class="token number">0</span>	    <span class="token number">2</span>	    *	    *	    *	    run-parts /etc/periodic/daily
+<span class="token number">0</span>	    <span class="token number">3</span>	    *	    *	    <span class="token number">6</span>	    run-parts /etc/periodic/weekly
+<span class="token number">0</span>	    <span class="token number">5</span>	    <span class="token number">1</span>	    *	    *	    run-parts /etc/periodic/monthly
+<span class="token comment"># after our Dockerfile runs:</span>
+<span class="token comment"># RUN echo "* * * * * run-parts /etc/periodic/1min" >> /etc/crontabs/root</span>
+<span class="token comment"># we'll have a non-default line here:</span>
+*	    *	    *	    *	    *	    run-parts /etc/periodic/1min</code></pre>
 <p>From the Dockerfile we create create a new directory, <code>1min</code> by <code>COPY</code>'ing a script there, and schedule the directories scripts to be ran every minute, expressed in the crontab syntax as seen above. See <a href="https://crontab.guru/#*_*_*_*_*">CronTabGuru</a> about the syntax.</p>
 <h2>Running this stuff</h2>
 <p>When you have the <code>Dockerfile</code>, <code>register-to-dashboard.sh</code> files ready, from that same directory we can run this stuff and check out if all is working fine:</p>
-<pre class="language-bash"><code class="language-bash"><span class="token comment"># build a docker image as instructed by the Dockerfile and tag it with "app"</span><br>docker build <span class="token builtin class-name">.</span> -t app<br><span class="token comment"># run a container using it</span><br>docker run app<br><span class="token comment"># in a terminal, see a list of running containers</span><br>docker <span class="token function">ps</span><br><span class="token comment"># if you don't see it, you can check all containers, including stopped ones + get more info with --no-trunc</span><br>docker <span class="token function">ps</span> -a --no-trunc<br><span class="token comment"># find the id or name of your running container, and open a shell on it</span><br>docker <span class="token builtin class-name">exec</span> -it <span class="token punctuation">{</span>your container <span class="token function">id</span> or name <span class="token punctuation">(</span>without brackets<span class="token punctuation">)</span><span class="token punctuation">}</span> /bin/sh<br><span class="token comment"># when shell opens, we can check out if our Dockerfile has configured the cronjob:</span><br><span class="token function">crontab</span> -l<br><span class="token comment"># ... look for line like this, if you see it - great</span><br><span class="token comment"># *	    *	    *	    *	    *	    run-parts /etc/periodic/1min</span><br><span class="token comment"># simulate running of scripts from our folder, the output will tell you which scripts will be run exactly</span><br>run-parts --test /etc/periodic/1min<br><span class="token comment"># if you wish, you can actually run the scripts yourself by issuing same command as the cronjob does</span><br>run-parts /etc/periodic/1min</code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token comment"># build a docker image as instructed by the Dockerfile and tag it with "app"</span>
+<span class="token function">docker</span> build <span class="token builtin class-name">.</span> <span class="token parameter variable">-t</span> app
+<span class="token comment"># run a container using it</span>
+<span class="token function">docker</span> run app
+<span class="token comment"># in a terminal, see a list of running containers</span>
+<span class="token function">docker</span> <span class="token function">ps</span>
+<span class="token comment"># if you don't see it, you can check all containers, including stopped ones + get more info with --no-trunc</span>
+<span class="token function">docker</span> <span class="token function">ps</span> <span class="token parameter variable">-a</span> --no-trunc
+<span class="token comment"># find the id or name of your running container, and open a shell on it</span>
+<span class="token function">docker</span> <span class="token builtin class-name">exec</span> <span class="token parameter variable">-it</span> <span class="token punctuation">{</span>your container <span class="token function">id</span> or name <span class="token punctuation">(</span>without brackets<span class="token punctuation">)</span><span class="token punctuation">}</span> /bin/sh
+<span class="token comment"># when shell opens, we can check out if our Dockerfile has configured the cronjob:</span>
+<span class="token function">crontab</span> <span class="token parameter variable">-l</span>
+<span class="token comment"># ... look for line like this, if you see it - great</span>
+<span class="token comment"># *	    *	    *	    *	    *	    run-parts /etc/periodic/1min</span>
+<span class="token comment"># simulate running of scripts from our folder, the output will tell you which scripts will be run exactly</span>
+run-parts <span class="token parameter variable">--test</span> /etc/periodic/1min
+<span class="token comment"># if you wish, you can actually run the scripts yourself by issuing same command as the cronjob does</span>
+run-parts /etc/periodic/1min</code></pre>
 <p>Your cronjob should already be running every minute now. So, while we were checking all this stuff, some output should have appeared in the first terminal, started the docker container.</p>
 <p>To see logs of a container anytime, even if you closed that terminal:</p>
-<pre class="language-bash"><code class="language-bash">docker logs <span class="token punctuation">{</span>container <span class="token function">id</span> or name<span class="token punctuation">}</span></code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token function">docker</span> logs <span class="token punctuation">{</span>container <span class="token function">id</span> or name<span class="token punctuation">}</span></code></pre>
 <p>If you need to stop the container</p>
-<pre class="language-bash"><code class="language-bash">docker stop <span class="token punctuation">{</span>container <span class="token function">id</span> or name<span class="token punctuation">}</span></code></pre>
+<pre class="language-bash"><code class="language-bash"><span class="token function">docker</span> stop <span class="token punctuation">{</span>container <span class="token function">id</span> or name<span class="token punctuation">}</span></code></pre>
 <p>So much fun, these cronjobs.</p>
 </div>
 			</main>
