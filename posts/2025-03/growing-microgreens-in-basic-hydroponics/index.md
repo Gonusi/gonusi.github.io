@@ -26,7 +26,7 @@ A few of the boxes were slightly deformed, with the center of the plastic nettin
 
 The silicone is already pre-cut and works perfectly with these trays at `[20cm, 28cm]` dimensions. For larger seeds, it's not needed. Definitely required for smaller ones.
 
-![Microgreens](./images/microgreen_seeds_3.jpg "Smaller seeds")
+![Small seeds in microgreen hydro box](./images/microgreen_seeds_3.jpg "Smaller seeds")
 
 Regular, basic seeds should be fine, just google the (big variety) of plants that can be consumed early on and don't have poisonous leaves etc. I actually accidentally bought some seeds for radishes nicely covered in a paper strip for easy planting. An extra pain here, but I've actually found the extra paper to hold moisture very well. 
 
@@ -36,3 +36,13 @@ When they sprout, I have a few lamps ready to shine on them for 16 hours a day (
 
 I'll update this post when they sprout. 
 
+## Day 3 update
+
+Beans, both varieties of radishes and brocolli have sprouted. For now the leaves are super small and yellow. I'll start using artificial lights tomorrow on them. I changed the water. The boxes had a weird, spicy smell in them (all of them), I'm slightly worried I should have changed the water in the box sooner - hopefully not a sign of some bacterial infestation yet. I'm spraying all the seeds with water every day. 
+
+Worryingly, both radishes, which had their seeds wrapped in paper, developed what I believe to be small mold spots. I suspect this is due to the paper always being super wet. I manually removed the mold spots. I marked them with red rectangles in the photo. 
+
+![Sprouted microgreens with signs of mold](./images/sprout_and_mold_microgreens.jpg "Sprouted microgreens with signs of mold")
+
+I'll see how this develops further. For now I've started tracking the sprouting (S) and problems (yellow background) in this table.
+![Microgreens sprout tracking table](./images/microgreen_table.jpg "Tracking sprouting and issues in a sheet")
