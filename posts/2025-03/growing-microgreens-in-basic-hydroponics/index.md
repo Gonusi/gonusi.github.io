@@ -46,3 +46,10 @@ Worryingly, both radishes, which had their seeds wrapped in paper, developed wha
 
 I'll see how this develops further. For now I've started tracking the sprouting (S) and problems (yellow background) in this table.
 ![Microgreens sprout tracking table](./images/microgreen_table.jpg "Tracking sprouting and issues in a sheet")
+
+## Day 4 update
+
+All have sprouted except for the smallest seeds of *Valerianella Locusta* (which I've thought would be the first). The plants remain moist, and seem to be doing well. No more mold growth (which was a surprise, maybe it wasn't mold after all?). I have decided to not change the water today as this would not be sustainable, and LLMs don't seem to think I need to. There was a spicy smell in most of the containers, yet I suspect this is actually the sprouts. 
+
+![A microgreen growing in hydroponics container](./images/first_leaves.jpg "A fast grower")
+![A microgreen growing in hydroponics container](./images/other_leaves.jpg "Everything sprouted")
