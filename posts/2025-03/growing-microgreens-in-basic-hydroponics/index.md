@@ -53,3 +53,33 @@ All have sprouted except for the smallest seeds of *Valerianella Locusta* (which
 
 ![A microgreen growing in hydroponics container](./images/first_leaves.jpg "A fast grower")
 ![A microgreen growing in hydroponics container](./images/other_leaves.jpg "Everything sprouted")
+
+## Day 10 update
+
+Ok, so I've made a couple of mistakes that ruined the experiment, however I consider it a success in the sense that I got very quickly that growing microgreens is probably not for me. At least not in this configuration.
+
+We had some excellent 15 Celsius, sunny weather last weeks despite it being early March. And so I made many mistakes (I think):
+- I kept the lids on during first 6 days or so. The super humid environment caused black funghus on beans. A lot of them died a horrible, gellatinous death. 
+- After that smelly fiasco, I've decided I won't eat the beans, which reduced motivation. 
+- I removed the lids, but did not keep up with spraying schedule - it's just too much work to keep the seeds moist. The smaller seeds quickly dried out in the sun. It was a pity to see the small roots that had developed die too.
+- The radishes, which were the best performers but enveloped in paper tissue were not able to free themselves from the paper. Some did, some remain under the paper. The paper is what kept them moist I think though. 
+- The broccoli are the only ones that I think I'll be able to eat tomorrow. They grew despite the bad conditions, and without any help from the paper.
+- The few surviving bean plants are now too large to consider them "microgreens". 
+
+All in all, I'll try to eat the broccoli, and a few of the radishes. The rest, I'll try to grow to full size plants by replanting into pots this weekend as to not kill them. I think the experiment has proved that at this time of my life I do not have the patience required to keep such delicate small plants alive. However, I'm still considering building an automated system out of the containers on a small scale - perhaps just 2 boxes. 
+
+### The good performers:
+![Broccoli](./images/end/broccoli.jpg "Broccoli")
+↑ Broccoli
+![Radishes](./images/end/radishes.jpg "Radishes")
+↑ Radishes (note the paper)
+
+### The smelly, poor moldy slimy performers:
+![Beans](./images/end/beans.jpg "Beans")
+↑ Beans (went slimy, moldy, stinky, will not eat but will grow them to full plants)
+
+### The dead:
+![Leafy greens](./images/end/leafy_greens.jpg "Leafy greens")
+↑ Leafy greens
+![Beetroot](./images/end/beetroot.jpg "Beetroot")
+↑ Beetroot
