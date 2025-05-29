@@ -21,8 +21,7 @@ Fortunately, free options still exist, and ChatGPT wrote a script for me which u
 brew install lftp
 ```
 
-Save this script `download-camera.sh` to some dir, create a directory "result" in the same directory.
-I found the script was unable to `mkdir` itself due to some mac system protection stuff, easier to just do it manually...
+Save this script `download-camera.sh`. I had problems with it being unable to create files / directories due to permissions / Apple "System integrity protection" stuff. So the script saves the results to your users home directory, which seemed to work (It will look like `/Users/yourusername/result`
 
 ```
 #!/bin/zsh
