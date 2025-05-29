@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link href="/css/main.css" rel="stylesheet" />
+		<link href="/css/prism-theme-retro.css" rel="stylesheet" />
+		<title>Transfer thousands of photos from android to mac via ftp · Kasparas Anusauskas</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="It's surprisingly difficult to do with most FTP programs being paid, and finder crashing due to 10s of thousands of files" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="icon" href="/assets/favicon.png" sizes="any" />
+		<link rel="apple-touch-icon" href="/assets/favicon.png" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400;1,500"
+			rel="stylesheet"
+		/>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-115C9Z6LKN"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+
+			gtag("config", "G-115C9Z6LKN");
+		</script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<header class="header">
+				<div class="blogInfo">
+					<div class="logo">Kasparas Anusauskas</div>
+					<div class="about">Personal development notes and experiments</div>
+				</div>
+				<nav class="nav">
+					<ul class="navList">
+						<li>
+							<a href="/"> Home </a>
+						</li>
+						<li>
+							<a href="/about">About</a>
+						</li>
+					</ul>
+				</nav>
+			</header>
+			<main class="content">
+				<h1>Transfer thousands of photos from android to mac via ftp</h1>
+				<div class="inner"><p>Today I was preparing my old Samsung S23 Ultra for sale after moving to iOS for now. The app &quot;Android transfer&quot;, which <em>kind of worked some of the time</em> to transfer files from android to mac was no longer available though. The mac also refused to see the phone as a USB storage device despite multiple attempts to connect it (of course setting the phone to &quot;USB / files transfer mode). The &quot;media transfer&quot; mode also did not work (while trying to import via &quot;Photos&quot; app on my mac).</p>
+<p>I then downloaded a <a href="https://play.google.com/store/apps/details?id=com.medhaapps.wififtpserver&amp;hl=en-US">one</a> of the many FTP server apps available for android. I was able to easily connect to the FTP server just by using &quot;Finder&quot; app:</p>
+<p><img src="./images/connect.png" alt="Connect to FTP server via finder"></p>
+<p>However, the finder was super slow / crashed / lost connection to server often (due to 10's of thousands of images in the &quot;DCIM/Camera&quot; directory) and I was not able to transfer them successfully (apart from doing it manually in batches of like a 1000).</p>
+<p>I tried to download an FTP client and, to my horror, on the appstore, all were paid (and I don't really need FTP for anything else at this point)</p>
+<p>Fortunately, free options still exist, and ChatGPT wrote a script for me which uses <code>lftp</code>. To install via homebrew:</p>
+<pre class="language-bash"><code class="language-bash">brew <span class="token function">install</span> lftp</code></pre>
+<p>Save this script <code>download-camera.sh</code>. I had problems with it being unable to create files / directories due to permissions / Apple &quot;System integrity protection&quot; stuff. So the script saves the results to your users home directory, which seemed to work (It will look like <code>/Users/yourusername/result</code></p>
+<pre><code>#!/bin/zsh
+set -euo pipefail
+
+# ── connection details (of course match them with your android FTP config)
+HOST=&quot;192.168.1.202&quot;
+PORT=&quot;2221&quot;
+USER=&quot;android&quot;
+PASS=&quot;yourpassword&quot;
+REMOTE_DIR=&quot;DCIM/Camera&quot;
+
+# ── target folder (flag or env var) ───────────────────────────────
+LOCAL_DIR=&quot;${LOCAL_DIR:-$HOME/result}&quot;
+while getopts &quot;d:&quot; opt; do
+[[ $opt == d ]] &amp;&amp; LOCAL_DIR=&quot;$OPTARG&quot;
+done
+LOG_FILE=&quot;$LOCAL_DIR/ftp-mirror.log&quot;
+
+mkdir -p &quot;$LOCAL_DIR&quot; 2&gt;/dev/null || {
+echo &quot;❌  Cannot write to $LOCAL_DIR — choose another location&quot; &gt;&amp;2
+exit 1
+}
+
+# ── lftp batch ────────────────────────────────────────────────────
+lftp -u &quot;${USER}&quot;,&quot;${PASS}&quot; -p &quot;${PORT}&quot; &quot;${HOST}&quot; &lt;&lt;EOF
+# --- connection settings
+set net:timeout 30
+set net:max-retries 3
+set cmd:fail-exit yes
+set ftp:list-options -a
+set xfer:clobber on
+
+# --- show remote file list
+cls -1 &quot;$REMOTE_DIR&quot;
+
+# --- sequential mirror download
+mirror --verbose \
+--parallel=1 \
+--use-pget-n=1 \
+--log=&quot;$LOG_FILE&quot; \
+&quot;$REMOTE_DIR&quot; &quot;$LOCAL_DIR&quot;
+
+bye
+EOF
+
+echo &quot;✅  Finished. Files are in $LOCAL_DIR&quot;
+echo &quot;   Transfer log: $LOG_FILE&quot;
+</code></pre>
+<p>Make the script executable:
+<code>chmod +x download-camera.sh</code></p>
+<p>Run the script:
+<code>./download-camera.sh</code></p>
+<p>And it works - it sequentially downloaded the 25k of photos / videos over the few hours. I had to keep my phones screen on though, the FTP app seemed to go to sleep otherwise (I went to developer options of the phone, and selected &quot;Keep screen on&quot; option&quot;).</p>
+<p>The models are truly becoming an UI for whatether you need - writing programs on the go. Cool but scary.</p>
+<p>Kasparas</p>
+</div>
+			</main>
+			<footer class="footer">
+				<div class="about">
+					<div><strong>Kasparas Anusauskas</strong></div>
+					<a href="https://www.linkedin.com/in/kasparas-anusauskas">LinkedIn</a>
+				</div>
+			</footer>
+		</div>
+		<!-- <div class="cookieBanner hidden"><div>Please note I'm using Google Analytics. This means this website is using all of the evil cookies you hear about. Only continue browsing if you're OK with that.</div> <button>I understand</button></div> -->
+	</body>
+</html>
