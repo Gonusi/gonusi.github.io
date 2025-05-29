@@ -4,12 +4,13 @@ description: It's surprisingly difficult to do with most FTP programs being paid
 layout: layout.html
 tags: ["posts"]
 date: 2025-05-29
+---
 
 Today I was preparing my old Samsung S23 Ultra for sale after moving to iOS for now. The app "Android transfer", which _kind of worked some of the time_ to transfer files from android to mac was no longer available though. The mac also refused to see the phone as a USB storage device despite multiple attempts to connect it (of course setting the phone to "USB / files transfer mode). The "media transfer" mode also did not work (while trying to import via "Photos" app on my mac). 
 
 I then downloaded a [one](https://play.google.com/store/apps/details?id=com.medhaapps.wififtpserver&hl=en-US) of the many FTP server apps available for android. I was able to easily connect to the FTP server just by using "Finder" app:
 
-![Connect to FTP server via finder](./images/connect.png "Connect to FTP server via finder")
+![Connect to FTP server via finder](./images/connect.png)
 
 However, the finder was super slow / crashed / lost connection to server often (due to 10's of thousands of images in the "DCIM/Camera" directory) and I was not able to transfer them successfully (apart from doing it manually in batches of like a 1000). 
 
@@ -82,5 +83,4 @@ And it works - it sequentially downloaded the 25k of photos / videos over the fe
 
 The models are truly becoming an UI for whatether you need - writing programs on the go. Cool but scary. 
 
-Truly yours, as always,
-Kasparas :) 
+Kasparas
