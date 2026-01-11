@@ -158,6 +158,13 @@ a:hover {
   font-size: 22px;
   line-height: 22px;
 }
+.blogInfo .logo a {
+  text-decoration: none;
+  color: inherit;
+}
+.blogInfo .logo a:hover {
+  color: blue;
+}
 .blogInfo .about {
   font-size: 14px;
   line-height: 14px;
