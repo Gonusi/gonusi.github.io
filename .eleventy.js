@@ -4,6 +4,7 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("css");
 	eleventyConfig.addPassthroughCopy("assets");
 	eleventyConfig.addPassthroughCopy("posts/**/images/**");
+	eleventyConfig.addPassthroughCopy("books/**/images/**");
 
 
 	return {

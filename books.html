@@ -1,0 +1,26 @@
+---
+layout: layout.html
+title: Book Reviews
+description: A collection of book reviews and notes. I write about the books I read so I can remember them.
+---
+
+<p class="description">This is an area where I write about the books I read so I can remember them. Mostly these will be non-development related, non-fiction books that I enjoy. </p>
+
+<div class="postList">
+    {% for book in collections.books reversed %}
+    <div class="postListItem">
+        <h2><a href="{{ book.url }}">{{ book.data.title }}</a></h2>
+        {% if book.data.description != null and book.data.description != "" %}
+        <p class="description">{{ book.data.description }}</p>
+        {% endif %}
+        <ul class="postTagList">
+        {% for tag in book.data.tags %}
+            {% if tag != "books" %}
+            <li class="postTag {% if tag == 'experiment' %}experiment{% endif %}"><a href="/tags/{{tag}}">{{tag}}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+        <em class="date">{{ book.date | date: "%Y-%m-%d" }}</em>
+    </div>
+    {% endfor %}
+</div>
