@@ -4,39 +4,63 @@ title: About me
 description: Programming experiments, things I've learned about, weird javascript and react stuff and a subtle hint of self promotion. A typical blog of a frontender.
 ---
 
-<img src="/assets/kasparas-anusauskas.jpg" alt="Kasparas Anusauskas profile picture" class="aboutPicture" />
+<img src="/assets/kasparas-anusauskas.jpg" alt="Kasparas Anusauskas profile
+picture" class="aboutPicture" />
 
 <p>
-	Hi there. I'm a frontend developer. For the last 4 years I've been working with JS / React,
-	building finance & crypto web apps running in large Docker microservice environment.
+<span id="greeting">Hi there</span>. You've stumbled upon my personal blog. I've
+been programming computers, mostly in JS stack, for more than 15 years now.
+Before that, I was programming them in amateur capacity too.
 </p>
 
 <p>
-	I've spent a lot of time on the "dark side" of things including authentication / authorization
-	using custom authorization servers, JWT cookies and willpower to get through that stuff -
-	debugging a lot of things I do not want to debug ever again (but I guess I now can).
+Mostly I've learned computers would probably do better without the humans, if
+they could (they say they will now, soon, *maybe*).
 </p>
 
 <p>
-	I also built landing pages for these apps, typically using either Gatsby or NextJS. This was
-	what I used to specialise at ±5 years ago, and that period of life accounts for another 10+
-	years of experience.
+For the last 8 years I've been working within the React ecosystem, while working
+as an employee of a fintech startup, and for the last 4 - at a company
+developing employee management software.
 </p>
 
 <p>
-	To be specific, we ran a small company - the "UAB Trys kintamieji", where I both created the
-	designs, and implemented them. We specialised in (very) custom landing pages, presenting complex
-	ideas using well thought-through, rich, animated experiences.
+But now that I've understoond more mature people value the thinking side more
+than the code itself, I'll instead try to just write about what I like and think
+about, both as a person and a developer.
 </p>
 
 <p>
-	This used to include a fair amount of thinking, product / audience analysis and idea generation,
-	performance optimisation on all kinds of devices. I do miss this stuff a bit, but I still
-	consult my old clients on ways technology can help their products provide additional value.
+Hopefully there will be at least a few pages of that!
 </p>
 
 <p>
-	All in all, I've been working in the field for more than 15 years, and it's incredible how much
-	the field has advanced. I just hope the never ending need to learn will keep me young, forever
-	:) .
+P.S. I'm from Lithuania, not an english speaker, and I try to keep this space as
+personal as possible, meaning I will not use ML tools to edit the text, and you
+can expect me to talk like this if you ever meet me. Yup.
 </p>
+
+<p>
+P.S.2 The picture is more than 10 years old now but it's a good picture. 
+</p>
+
+
+<script>
+(function() {
+	const hour = new Date().getHours();
+	let greeting;
+	
+	if (hour < 12) {
+		greeting = 'Good morning';
+	} else if (hour < 18) {
+		greeting = 'Good afternoon';
+	} else {
+		greeting = 'Good evening';
+	}
+	
+	const greetingElement = document.getElementById('greeting');
+	if (greetingElement) {
+		greetingElement.textContent = greeting;
+	}
+})();
+</script>
