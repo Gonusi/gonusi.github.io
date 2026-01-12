@@ -13,7 +13,9 @@ description: They say writing is thinking. Here I think about my programming exp
         {% endif %}
         <ul class="postTagList">
         {% for tag in post.data.tags %}
+            {% if tag != "posts" %}
             <li class="postTag {% if tag == 'experiment' %}experiment{% endif %}"><a href="/tags/{{tag}}">{{tag}}</a></li>
+            {% endif %}
         {% endfor %}
         </ul>
         <em class="date">{{ post.date | date: "%Y-%m-%d" }}</em>
