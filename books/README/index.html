@@ -1,0 +1,22 @@
+<h1>Books Directory</h1>
+<p>This directory contains book reviews and notes. Each book should be in its own subdirectory following this structure:</p>
+<pre><code>books/
+  YYYY-MM/
+    book-title-slug/
+      index.md
+      images/  (optional)
+        cover.jpg
+        ...
+</code></pre>
+<h2>Book Entry Format</h2>
+<p>Each book entry should be a markdown file (<code>index.md</code>) with front matter like this:</p>
+<pre class="language-markdown"><code class="language-markdown"><span class="token front-matter-block"><span class="token punctuation">---</span>
+<span class="token front-matter yaml language-yaml">title: Book Title
+description: A brief description of the book
+layout: layout.html
+tags: ["books"]
+date: YYYY-MM-DD</span>
+<span class="token punctuation">---</span></span>
+
+Your book review content here...</code></pre>
+<p>The <code>tags: [&quot;books&quot;]</code> is required for the book to appear in the books listing.</p>
