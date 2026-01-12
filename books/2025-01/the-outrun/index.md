@@ -21,3 +21,4 @@ Then the author experiences a crisis and successfully fights her addiction in a 
 
 Finding solace in counting birds, the weird nature of the treeless islands, the abundance of weird fauna. The author tackles her own mind, but described it all in a very non-selfish, interesting way. You also want to experience that, but do not feel inferior about not doing it, kind of. 
 
+To be continued. 
