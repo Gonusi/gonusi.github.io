@@ -1,13 +1,13 @@
 ---
 title: The Outrun
+author: Amy Liptrot
+ISBN: 978-1-78689-422-9
+year: 1926
 description: A memoir about the author's struggle as an alcoholic London dweller, healing herself by returning to nature at her home in the north Scotland islands.
 layout: layout.html
-tags: ["books"]
-date: 2025-01-15
+tags: ["books", "British", "Non-fiction", "Scotland", "Nature", "Islands"]
+date: 2025-01-05
 ---
-
-**Author:** Amy Liptrot  
-**ISBN:** 978-1-78689-422-9
 
 I went through the book quickly and really enjoyed it. It has a calming quality as you always know it will get better, more silent towards the end of the book, despite the start being hard. Perhaps I know this because I can somewhat relate, the nature mentioned right at the start of the book being just too beautiful to not turn to as the author struggles more and more with her affliction. 
 

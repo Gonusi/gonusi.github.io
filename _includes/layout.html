@@ -50,6 +50,17 @@
 			</header>
 			<main class="content">
 				<h1>{{ title }}</h1>
+				{% if author != null and author != "" %}
+				<div class="bookMetadata">
+					<p><strong>Author:</strong> {{ author }}</p>
+					{% if ISBN != null and ISBN != "" %}
+					<p><strong>ISBN:</strong> {{ ISBN }}</p>
+					{% endif %}
+					{% if year != null and year != "" %}
+					<p><strong>Year:</strong> {{ year }}</p>
+					{% endif %}
+				</div>
+				{% endif %}
 				<div class="inner">{{ content }}</div>
 			</main>
 			<footer class="footer">
