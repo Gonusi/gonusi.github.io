@@ -50,6 +50,7 @@
 			</header>
 			<main class="content">
 				<h1>Setting up a cronjob in a docker container running alpine linux node image container</h1>
+				
 				<div class="inner"><p>After finishing a NextJS app running in our docker service stack, I had to make it register to our service health dashboard. It accepts a POST request with some data, which is out of the scope of this article. Anyway, all the other services were using  <em>curl</em> to post and report their health every other minute.</p>
 <p>Here's the registration script. Nothing fancy, just using curl to make a POST request to an address defined in an environment variable:</p>
 <pre class="language-bash"><code class="language-bash"><span class="token comment"># Docker prefils this with container ID, which can be used to access </span>

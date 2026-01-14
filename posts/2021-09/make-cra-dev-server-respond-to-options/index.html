@@ -50,6 +50,7 @@
 			</header>
 			<main class="content">
 				<h1>Make CRA dev server respond to CORS OPTIONS requests, as a gentleman should</h1>
+				
 				<div class="inner"><p>If you have ever wished to access the dev server of Create React App, your'e in luck. While working on a login page for a custom authorization server, I needed our OAuth client (SPA app) to return <code>204 OK</code> response with correct CORS headers even in development mode. Essentially, I wanted two CRA apps running on different ports to be able to talk to each other using cross origin POST requests.</p>
 <p>Development server (also based on CRA) with login page running @ https://login.app:3000:</p>
 <pre class="language-text"><code class="language-text">POST `https://client.app:3001/login-callback?code=123?state=456`</code></pre>
