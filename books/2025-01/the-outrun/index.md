@@ -7,6 +7,7 @@ description: A memoir about the author's struggle as an alcoholic London dweller
 layout: layout.html
 tags: ["books", "British", "Non-fiction", "Scotland", "Nature", "Islands"]
 date: 2025-01-05
+score: 3
 ---
 
 I went through the book quickly and really enjoyed it even if it started getting a bit bored at the end. It has a calming quality as it describes the life of an addict getting better through her experiences in nature - the archipelago of northern Scotland isles. Mostly about islands of Orkney and Papay, which I've now looked up in google maps.
@@ -29,10 +30,17 @@ All the small things gradually help author fight the feeling that nothing is wor
 
 I especially liked and resonated with one paragraph about how she found snorkeling in the islands uncovered a whole new world. I will paste this here, and end this with that.
 
-```
-Face down in shallow water, coated in neoprene and breathing through a tube, I feel as if I've opened a door that has always been in my house but I had never noticed. Life can be bigger and richer than I knew.
-```
+> Face down in shallow water, coated in neoprene and breathing through a tube, I feel as if I've opened a door that has always been in my house but I had never noticed. Life can be bigger and richer than I knew.
 
-![The Outrun cover](./cover.jpeg)
+Surely there must be such doors in all of our lives. 
+
+
+<img src="./cover.jpeg" alt="The Outrun cover" class="bookCover">
 
 P.S. The publishers do a great job by adding first sections of her other books in the end of the book. While I found myself being tired of this one a bit at the end, after reading the start of next 2 ones, I'll probably get them too. 
+
+## Anything learnt from the book?
+
+- I know / knew a lot of alcohol-addicted people. Like my Italian stepfather (RIP), who even had a disability assign by state due to it. This book perhaps could have revealed a bit of how they felt, however it's probably a very personal experience.
+- One can seemingly live (and live quite nicely) by just floating through opportunities that appear - kind of without perpetual office job etc. Still one must be brave to pursue this, as the author went that road not due to choice, but necessity. 
+- There are even more things to be noticed around that I previously thought (the author tought about birds, underwater, wind, stars, ability to think how other people live, which one kind of knows, but knows more of after this read). 

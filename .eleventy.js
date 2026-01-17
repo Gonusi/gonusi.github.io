@@ -5,6 +5,8 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("assets");
 	eleventyConfig.addPassthroughCopy("posts/**/images/**");
 	eleventyConfig.addPassthroughCopy("books/**/images/**");
+	eleventyConfig.addPassthroughCopy("books/**/*.jpeg");
+	eleventyConfig.addPassthroughCopy("books/**/*.jpg");
 
 
 	return {
