@@ -353,4 +353,17 @@ img {
   height: auto
 }
 
+.bookCover {
+  max-width: 320px;
+}
+
+blockquote {
+  font-style: italic;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-left: 4px solid #e0e0e0;
+}
+
 /*# sourceMappingURL=main.css.map */
