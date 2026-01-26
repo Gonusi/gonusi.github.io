@@ -10,7 +10,6 @@ const RESIZED_FLAG = ".resized"; // DANGER IF CHANGED WILL RE-PROCESS ALL IMAGES
 const MAX_WIDTH = 1024;
 const MAX_HEIGHT = 800;
 const JPEG_QUALITY = 70;
-const PNG_QUALITY = 70;
 const SKIP_DIRS = new Set(["node_modules", "_site", ".git"]);
 
 function isResizable(filePath) {
@@ -23,30 +22,41 @@ function isResizable(filePath) {
 
 function toResizedPath(filePath) {
 	const parsed = path.parse(filePath);
-	return path.join(parsed.dir, `${parsed.name}${RESIZED_FLAG}${parsed.ext}`);
+	const ext = parsed.ext.toLowerCase();
+	const outputExt = ext === ".png" ? ".jpg" : parsed.ext;
+	return path.join(parsed.dir, `${parsed.name}${RESIZED_FLAG}${outputExt}`);
 }
 
-async function moveOrCopy(sourcePath, destPath, preserveOriginals) {
+async function copyOrReplace(sourcePath, destPath) {
 	await fs.rm(destPath, { force: true });
-	if (preserveOriginals) {
-		await fs.copyFile(sourcePath, destPath);
-		return;
-	}
-	await fs.rename(sourcePath, destPath);
+	await fs.copyFile(sourcePath, destPath);
 }
 
-async function resizeFile(filePath, preserveOriginals) {
+async function resizeFile(filePath) {
 	const resizedPath = toResizedPath(filePath);
 	const metadata = await sharp(filePath).metadata();
 	const width = metadata.width || 0;
 	const height = metadata.height || 0;
 	const needsResize = width > MAX_WIDTH || height > MAX_HEIGHT;
 	const ext = path.extname(filePath).toLowerCase();
+	const convertPngToJpg = ext === ".png";
 
 	if (!needsResize) {
-		await moveOrCopy(filePath, resizedPath, preserveOriginals);
+		if (convertPngToJpg) {
+			await fs.rm(resizedPath, { force: true });
+			await sharp(filePath).jpeg({ quality: JPEG_QUALITY }).toFile(resizedPath);
+			console.log(
+				`[images] converted (no resize needed) ${path.relative(
+					process.cwd(),
+					resizedPath
+				)}`
+			);
+			return;
+		}
+
+		await copyOrReplace(filePath, resizedPath);
 		console.log(
-			`[images] ${preserveOriginals ? "copied" : "renamed"} (no resize needed) ${path.relative(
+			`[images] copied (no resize needed) ${path.relative(
 				process.cwd(),
 				resizedPath
 			)}`
@@ -62,29 +72,26 @@ async function resizeFile(filePath, preserveOriginals) {
 		withoutEnlargement: true,
 	});
 
-	if (ext === ".jpg" || ext === ".jpeg") {
+	if (convertPngToJpg) {
 		pipeline = pipeline.jpeg({ quality: JPEG_QUALITY });
-	} else if (ext === ".png") {
-		pipeline = pipeline.png({ quality: PNG_QUALITY });
+	} else if (ext === ".jpg" || ext === ".jpeg") {
+		pipeline = pipeline.jpeg({ quality: JPEG_QUALITY });
 	}
 
 	await pipeline.toFile(resizedPath);
-	if (!preserveOriginals) {
-		await fs.unlink(filePath);
-	}
 	console.log(`[images] resized ${path.relative(process.cwd(), resizedPath)}`);
 }
 
 const processing = new Set();
 
-async function processFile(filePath, preserveOriginals) {
+async function processFile(filePath) {
 	const absolutePath = path.resolve(filePath);
 	if (!isResizable(absolutePath)) return;
 	if (processing.has(absolutePath)) return;
 
 	processing.add(absolutePath);
 	try {
-		await resizeFile(absolutePath, preserveOriginals);
+		await resizeFile(absolutePath);
 	} catch (error) {
 		console.error(`[images] failed ${absolutePath}`);
 		console.error(error);
@@ -93,7 +100,7 @@ async function processFile(filePath, preserveOriginals) {
 	}
 }
 
-async function walk(directory, preserveOriginals) {
+async function walk(directory) {
 	let entries;
 	try {
 		entries = await fs.readdir(directory, { withFileTypes: true });
@@ -106,24 +113,24 @@ async function walk(directory, preserveOriginals) {
 		const fullPath = path.join(directory, entry.name);
 		if (entry.isDirectory()) {
 			if (SKIP_DIRS.has(entry.name)) continue;
-			await walk(fullPath, preserveOriginals);
+			await walk(fullPath);
 			continue;
 		}
 
 		if (entry.isFile()) {
-			await processFile(fullPath, preserveOriginals);
+			await processFile(fullPath);
 		}
 	}
 }
 
-async function runOnce(preserveOriginals) {
+async function runOnce() {
 	for (const root of ROOTS) {
 		const rootPath = path.join(process.cwd(), root);
-		await walk(rootPath, preserveOriginals);
+		await walk(rootPath);
 	}
 }
 
-async function watch(preserveOriginals) {
+async function watch() {
 	const chokidar = require("chokidar");
 	const patterns = ROOTS.map((root) =>
 		path.join(root, "**/*.{jpg,jpeg,png}")
@@ -138,17 +145,16 @@ async function watch(preserveOriginals) {
 		},
 	});
 
-	watcher.on("add", (filePath) => processFile(filePath, preserveOriginals));
-	watcher.on("change", (filePath) => processFile(filePath, preserveOriginals));
+	watcher.on("add", (filePath) => processFile(filePath));
+	watcher.on("change", (filePath) => processFile(filePath));
 
 	console.log(`[images] watching ${ROOTS.join(", ")}`);
 }
 
 const shouldWatch = process.argv.includes("--watch");
-const preserveOriginals = shouldWatch;
 
-runOnce(preserveOriginals)
-	.then(() => (shouldWatch ? watch(preserveOriginals) : undefined))
+runOnce()
+	.then(() => (shouldWatch ? watch() : undefined))
 	.catch((error) => {
 		console.error(error);
 		process.exitCode = 1;
