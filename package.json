@@ -4,9 +4,11 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"images:resize": "node scripts/resize-images.js",
+		"images:watch": "node scripts/resize-images.js --watch",
 		"sass:watch": "npx sass --watch css/main.scss:css/main.css",
-		"develop": "npx concurrently \"npm run sass:watch\" \"npx @11ty/eleventy --serve\"",
-		"build": "eleventy",
+		"develop": "npx concurrently \"npm run sass:watch\" \"npm run images:watch\" \"npx @11ty/eleventy --serve\"",
+		"build": "npm run images:resize && eleventy",
 		"test": "jest --watchAll"
 	},
 	"keywords": [],
@@ -21,11 +23,13 @@
 		"@testing-library/cypress": "^10.0.3",
 		"babel-jest": "^29.7.0",
 		"babel-loader": "^10.0.0",
+		"chokidar": "^4.0.3",
 		"concurrently": "^8.2.2",
 		"html-webpack-plugin": "^5.6.3",
 		"jest": "^29.7.0",
 		"msw": "^2.7.3",
 		"regenerator-runtime": "^0.14.1",
+		"sharp": "^0.33.5",
 		"webpack": "^5.98.0",
 		"webpack-cli": "^6.0.1",
 		"webpack-dev-server": "^5.2.0"

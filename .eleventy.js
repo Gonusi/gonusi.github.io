@@ -7,9 +7,14 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("books/**/images/**");
 	eleventyConfig.addPassthroughCopy("books/**/*.jpeg");
 	eleventyConfig.addPassthroughCopy("books/**/*.jpg");
+	eleventyConfig.addPassthroughCopy("books/**/*.png");
 	eleventyConfig.addPassthroughCopy("til/**/images/**");
 	eleventyConfig.addPassthroughCopy("til/**/*.jpeg");
 	eleventyConfig.addPassthroughCopy("til/**/*.jpg");
+	eleventyConfig.addPassthroughCopy("til/**/*.png");
+	eleventyConfig.addPassthroughCopy("posts/**/*.jpeg");
+	eleventyConfig.addPassthroughCopy("posts/**/*.jpg");
+	eleventyConfig.addPassthroughCopy("posts/**/*.png");
 
 
 	return {
