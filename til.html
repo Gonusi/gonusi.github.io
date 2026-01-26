@@ -1,0 +1,26 @@
+---
+layout: layout.html
+title: Today I Learned
+description: A collection of things I learned. This will include a lot of different stuff, so beware.
+---
+
+<p class="description">A kind of a diary if you will, but for things that I learned. Comically for an originally a "programming related" blog, I think most of the entries will be about something else? We'll see.</p>
+
+<div class="postList">
+    {% for til in collections.til reversed %}
+    <div class="postListItem">
+        <h2><a href="{{ til.url }}">{{ til.data.title }}</a></h2>
+        {% if til.data.description != null and til.data.description != "" %}
+        <p class="description">{{ til.data.description }}</p>
+        {% endif %}
+        <ul class="postTagList">
+        {% for tag in til.data.tags %}
+            {% if tag != "til" %}
+            <li class="postTag {% if tag == 'experiment' %}experiment{% endif %}"><a href="/tags/{{tag}}">{{tag}}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+        <em class="date">{{ til.date | date: "%Y-%m-%d" }}</em>
+    </div>
+    {% endfor %}
+</div>

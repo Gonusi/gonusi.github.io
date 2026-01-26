@@ -138,7 +138,7 @@ a {
 }
 a:hover {
   text-decoration: underline;
-  color: #32bfea;
+  color: rgb(49.9104477612, 190.7686567164, 233.5895522388);
 }
 
 .header {
@@ -179,28 +179,35 @@ a:hover {
   align-items: center;
   padding: 0;
   margin: 0;
+  flex-wrap: nowrap;
 }
 @media (min-width: 480px) {
   .navList {
     flex-direction: row;
+    flex-wrap: nowrap;
   }
 }
 .navList > li {
   padding: 0;
-  margin: 5px 10px;
+  margin: 5px 8px;
+  white-space: nowrap;
 }
 @media (min-width: 480px) {
+  .navList > li {
+    margin: 5px 6px;
+  }
   .navList > li:last-child {
     margin-right: 0;
   }
 }
 .navList > li a {
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 14px;
-  padding: 8px 14px;
+  font-size: 13px;
+  padding: 8px 12px;
   border: 2px solid blue;
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
 }
 .navList > li a:hover {
   background: blue;
@@ -323,8 +330,7 @@ p code {
 
 .videoWrapper {
   position: relative;
-  padding-bottom: 56.25%;
-  /* 16:9 */
+  padding-bottom: 56.25%; /* 16:9 */
   height: 0;
 }
 
@@ -350,7 +356,7 @@ p code {
 
 img {
   width: 100%;
-  height: auto
+  height: auto;
 }
 
 .bookCover {
