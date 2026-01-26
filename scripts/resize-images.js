@@ -7,9 +7,9 @@ const sharp = require("sharp");
 const ROOTS = ["til", "posts", "books"];
 const EXTENSIONS = new Set([".jpg", ".jpeg", ".png"]);
 const RESIZED_FLAG = ".resized"; // DANGER IF CHANGED WILL RE-PROCESS ALL IMAGES!!!
-const MAX_WIDTH = 1024;
-const MAX_HEIGHT = 800;
-const JPEG_QUALITY = 70;
+const MAX_WIDTH = 1280;
+const MAX_HEIGHT = 1024;
+const JPEG_QUALITY = 65;
 const SKIP_DIRS = new Set(["node_modules", "_site", ".git"]);
 
 function isResizable(filePath) {
@@ -23,7 +23,7 @@ function isResizable(filePath) {
 function toResizedPath(filePath) {
 	const parsed = path.parse(filePath);
 	const ext = parsed.ext.toLowerCase();
-	const outputExt = ext === ".png" ? ".jpg" : parsed.ext;
+	const outputExt = ext === ".png" || ext === ".jpeg" ? ".jpg" : parsed.ext;
 	return path.join(parsed.dir, `${parsed.name}${RESIZED_FLAG}${outputExt}`);
 }
 
@@ -39,10 +39,10 @@ async function resizeFile(filePath) {
 	const height = metadata.height || 0;
 	const needsResize = width > MAX_WIDTH || height > MAX_HEIGHT;
 	const ext = path.extname(filePath).toLowerCase();
-	const convertPngToJpg = ext === ".png";
+	const convertToJpg = ext === ".png" || ext === ".jpeg";
 
 	if (!needsResize) {
-		if (convertPngToJpg) {
+		if (convertToJpg) {
 			await fs.rm(resizedPath, { force: true });
 			await sharp(filePath).jpeg({ quality: JPEG_QUALITY }).toFile(resizedPath);
 			console.log(
@@ -72,7 +72,7 @@ async function resizeFile(filePath) {
 		withoutEnlargement: true,
 	});
 
-	if (convertPngToJpg) {
+	if (convertToJpg) {
 		pipeline = pipeline.jpeg({ quality: JPEG_QUALITY });
 	} else if (ext === ".jpg" || ext === ".jpeg") {
 		pipeline = pipeline.jpeg({ quality: JPEG_QUALITY });

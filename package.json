@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"images:cleanup": "node scripts/remove-originals-with-resized.js",
 		"images:resize": "node scripts/resize-images.js",
 		"images:watch": "node scripts/resize-images.js --watch",
 		"sass:watch": "npx sass --watch css/main.scss:css/main.css",
