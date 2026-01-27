@@ -1,0 +1,22 @@
+<h1>TIL Directory</h1>
+<p>This directory contains &quot;Today I Learned&quot; posts. Each TIL entry should be in its own subdirectory following this structure:</p>
+<pre><code>til/
+  YYYY-MM/
+    til-title-slug/
+      index.md
+      images/  (optional)
+        image.jpg
+        ...
+</code></pre>
+<h2>TIL Entry Format</h2>
+<p>Each TIL entry should be a markdown file (<code>index.md</code>) with front matter like this:</p>
+<pre class="language-markdown"><code class="language-markdown"><span class="token front-matter-block"><span class="token punctuation">---</span>
+<span class="token front-matter yaml language-yaml">title: What I Learned Today
+description: A brief description of what was learned
+layout: layout.html
+tags: ["til"]
+date: YYYY-MM-DD</span>
+<span class="token punctuation">---</span></span>
+
+Your TIL content here...</code></pre>
+<p>The <code>tags: [&quot;til&quot;]</code> is required for the TIL to appear in the TIL listing.</p>
