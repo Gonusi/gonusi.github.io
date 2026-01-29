@@ -41,3 +41,8 @@ window.addEventListener('afterprint', handleAfterPrint) // nice
 
 I also, once again, confirmed that having 2 versions of a microservice you wrote with both being used in the codebase is not the way to go. I'll start remedying this tomorrow immediatelly. 
 
+---
+
+I also learned this TIL section is truly a nice way to reflect on the day, even if I'll probably have to rename it to "Diary" :) 
+
+It being online forces one to try and write in an at least comprehensible manner, even if no one will probably read it. It kind of sums up the day and invigorates me to keep the work tomorrow. 
