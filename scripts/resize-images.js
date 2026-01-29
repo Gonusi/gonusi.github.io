@@ -3,9 +3,10 @@
 const fs = require("fs/promises");
 const path = require("path");
 const sharp = require("sharp");
+const convert = require("heic-convert");
 
 const ROOTS = ["til", "posts", "books"];
-const EXTENSIONS = new Set([".jpg", ".jpeg", ".png"]);
+const EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".heic"]);
 const RESIZED_FLAG = ".resized"; // DANGER IF CHANGED WILL RE-PROCESS ALL IMAGES!!!
 const MAX_WIDTH = 1280;
 const MAX_HEIGHT = 1024;
@@ -23,7 +24,8 @@ function isResizable(filePath) {
 function toResizedPath(filePath) {
 	const parsed = path.parse(filePath);
 	const ext = parsed.ext.toLowerCase();
-	const outputExt = ext === ".png" || ext === ".jpeg" ? ".jpg" : parsed.ext;
+	const outputExt =
+		ext === ".png" || ext === ".jpeg" || ext === ".heic" ? ".jpg" : parsed.ext;
 	return path.join(parsed.dir, `${parsed.name}${RESIZED_FLAG}${outputExt}`);
 }
 
@@ -32,19 +34,38 @@ async function copyOrReplace(sourcePath, destPath) {
 	await fs.copyFile(sourcePath, destPath);
 }
 
+async function heicToJpegBuffer(filePath) {
+	const buffer = await fs.readFile(filePath);
+	return convert({
+		buffer,
+		format: "JPEG",
+		quality: 1,
+	});
+}
+
+async function getSharpInput(filePath, ext, heicJpegBuffer) {
+	if (ext === ".heic" && heicJpegBuffer) return sharp(heicJpegBuffer);
+	return sharp(filePath);
+}
+
 async function resizeFile(filePath) {
 	const resizedPath = toResizedPath(filePath);
-	const metadata = await sharp(filePath).metadata();
+	const ext = path.extname(filePath).toLowerCase();
+	const isHeic = ext === ".heic";
+
+	const heicJpegBuffer = isHeic ? await heicToJpegBuffer(filePath) : null;
+	const sharpInput = await getSharpInput(filePath, ext, heicJpegBuffer);
+	const metadata = await sharpInput.metadata();
 	const width = metadata.width || 0;
 	const height = metadata.height || 0;
 	const needsResize = width > MAX_WIDTH || height > MAX_HEIGHT;
-	const ext = path.extname(filePath).toLowerCase();
-	const convertToJpg = ext === ".png" || ext === ".jpeg";
+	const convertToJpg = ext === ".png" || ext === ".jpeg" || ext === ".heic";
 
 	if (!needsResize) {
 		if (convertToJpg) {
 			await fs.rm(resizedPath, { force: true });
-			await sharp(filePath).jpeg({ quality: JPEG_QUALITY }).toFile(resizedPath);
+			const input = await getSharpInput(filePath, ext, heicJpegBuffer);
+			await input.jpeg({ quality: JPEG_QUALITY }).toFile(resizedPath);
 			console.log(
 				`[images] converted (no resize needed) ${path.relative(
 					process.cwd(),
@@ -65,7 +86,8 @@ async function resizeFile(filePath) {
 	}
 
 	await fs.rm(resizedPath, { force: true });
-	let pipeline = sharp(filePath).resize({
+	const inputForResize = await getSharpInput(filePath, ext, heicJpegBuffer);
+	let pipeline = inputForResize.resize({
 		width: MAX_WIDTH,
 		height: MAX_HEIGHT,
 		fit: "inside",
@@ -133,7 +155,7 @@ async function runOnce() {
 async function watch() {
 	const chokidar = require("chokidar");
 	const patterns = ROOTS.map((root) =>
-		path.join(root, "**/*.{jpg,jpeg,png}")
+		path.join(root, "**/*.{jpg,jpeg,png,heic}")
 	);
 
 	const watcher = chokidar.watch(patterns, {
