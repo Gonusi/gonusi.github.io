@@ -4,6 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"new:til": "node scripts/new-content.js til",
+		"new:post": "node scripts/new-content.js post",
+		"new:book": "node scripts/new-content.js book",
 		"images:cleanup": "node scripts/remove-originals-with-resized.js",
 		"images:resize": "node scripts/resize-images.js",
 		"images:watch": "node scripts/resize-images.js --watch",
