@@ -1,6 +1,5 @@
 ---
 title: Learning Ink shading, building tool to build book cabinet
-description: This is a test entry for the TIL section
 tags: ["til"]
 date: 2026-01-25
 permalink: /til/2026-01/25_ink-and-diy-shelving/

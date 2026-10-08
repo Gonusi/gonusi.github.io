@@ -14,7 +14,7 @@ The beauty of microgreens - the tiny plants that get eaten at around 7 - 15 days
 
 - [(25 Eur) 6 hydroponics microgreen growing trays (generic, everybody sells them)](https://www.amazon.de/-/en/dp/B09NQZH19H)
 - [(6 Eur) Silicone net used for drying vegetables](https://www.amazon.de/dp/B0DHKY6TX3)
-- [(10 Eur) worth of regular seeds bought locally]
+- (10 Eur) worth of regular seeds bought locally
 
 You fill up that plastic tray with water, and the seeds sprout roots that go down through plastic webbing, reaching the water. No other medium should be necessary (but we'll see). According to the tutorials, one could improve output by using hydroponics suitable fertilizer in the water, but it's not necessary since the greens are cut so early.
 

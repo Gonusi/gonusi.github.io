@@ -14,7 +14,7 @@ been programming computers, mostly in JS stack, for more than 15 years now.
 Before that, I was programming them in amateur capacity too.
 
 Mostly I've learned computers would probably do better without the humans, if
-they could (they say they will now, soon, \*maybe\*).
+they could (they say they will now, soon, *maybe*).
 
 For the last 8 years I've been working within the React ecosystem, while working
 as an employee of a fintech startup, and for the last 4 - at a company

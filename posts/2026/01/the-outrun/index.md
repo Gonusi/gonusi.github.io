@@ -37,7 +37,7 @@ I especially liked and resonated with one paragraph about how she found snorkeli
 Surely there must be such doors in all of our lives. 
 
 
-<img src="./cover.resized.jpg" alt="The Outrun cover" class="bookCover">
+![The Outrun cover](./cover.resized.jpg)
 
 P.S. The publishers do a great job by adding first sections of her other books in the end of the book. While I found myself being tired of this one a bit at the end, after reading the start of next 2 ones, I'll probably get them too. 
 

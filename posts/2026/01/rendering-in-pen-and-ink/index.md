@@ -1,5 +1,5 @@
 ---
-title: Rendering in Pen and Ink - The Classic Book On Pen and Ink
+title: Rendering in Pen and Ink – The Classic Book On Pen and Ink
 author: Arthur L. Guptill
 ISBN: 978-0-307-83188-0
 year: 2014

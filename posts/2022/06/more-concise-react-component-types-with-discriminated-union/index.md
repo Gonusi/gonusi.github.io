@@ -1,5 +1,5 @@
 ---
-title: Typescript - discriminated unions for more concise react component prop types
+title: TypeScript – discriminated unions for more concise react component prop types
 description: If your react component can accept a prop (or not) based on the value of another prop, typescript can help to avoid mistakes by giving proper warnings on incorrect usage.
 tags: ["daily", "today I learned", "react", "typescript"]
 date: 2022-06-17
@@ -124,12 +124,7 @@ export default function App() {
 
 Try it out in this codesandbox. Try adding `school="xyz"` prop to the `Person` with `isAdult={true}` prop. Note how typescript warns you that this Person can not have such a prop.
 
-<iframe src="https://codesandbox.io/embed/typescript-discriminated-union-props-k1786b?fontsize=14&hidenavigation=1&theme=dark&view=editor"
-style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-title="typescript-discriminated-union-props"
-allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>
+[Open the example in CodeSandbox](https://codesandbox.io/s/typescript-discriminated-union-props-k1786b)
 
 
 Further reading:
