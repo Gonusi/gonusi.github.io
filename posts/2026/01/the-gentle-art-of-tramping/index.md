@@ -1,6 +1,6 @@
 ---
 title: The Gentle Art of Tramping
-author: Stephen Graham
+bookAuthor: Stephen Graham
 ISBN: 
 description: A hiking book from the 1926 with interesting language and old school stuff.
 year: 1926

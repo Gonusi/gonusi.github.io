@@ -1,6 +1,6 @@
 ---
 title: The Outrun
-author: Amy Liptrot
+bookAuthor: Amy Liptrot
 ISBN: 978-1-78689-422-9
 year: 
 description: A memoir about the author's struggle as an alcoholic London dweller, healing herself by returning to nature at her home in the north Scotland islands.

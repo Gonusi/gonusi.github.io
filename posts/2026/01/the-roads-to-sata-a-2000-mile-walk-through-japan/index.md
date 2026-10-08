@@ -1,6 +1,6 @@
 ---
 title: The Roads to Sata – A 2000-Mile Walk Through Japan
-author: Alan Booth
+bookAuthor: Alan Booth
 ISBN: 978-0-141-99283-9
 year: 2021 (Originally 1985)
 description: Alan tramps through north to south of Japan through the incredible terrain, finding kindness, insigths and curiosities, but also encountering the various idiocracies and stubborness of 1977 Japan. 
