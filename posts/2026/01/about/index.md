@@ -1,0 +1,53 @@
+---
+title: About me
+description: Programming experiments, things I've learned about, weird javascript and react stuff and a subtle hint of self promotion. A typical blog of a frontender.
+date: 2026-01-12
+tags:
+  - about
+permalink: /about/
+---
+
+![Kasparas Anusauskas profile picture](kasparas-anusauskas.jpg)
+
+<span id="greeting">Hi there</span>. You've stumbled upon my personal blog. I've
+been programming computers, mostly in JS stack, for more than 15 years now.
+Before that, I was programming them in amateur capacity too.
+
+Mostly I've learned computers would probably do better without the humans, if
+they could (they say they will now, soon, \*maybe\*).
+
+For the last 8 years I've been working within the React ecosystem, while working
+as an employee of a fintech startup, and for the last 4 - at a company
+developing employee management software.
+
+But now that I've started appreciating the thinking side more than the coding one,
+I'll instead try to just write about what I like and think
+about, both as a person and a developer. Hopefully there will be at least something on the blog!
+
+I enjoy drawing childish illustrations, running, tinkering with arduinos, reading books, fixing up my old inherited farm house. Maybe some of that will appear here.
+
+P.S. I'm from Lithuania, not an english speaker, and I try to keep this space as
+personal as possible, meaning I will not use ML tools to edit the text, and you
+can expect me to talk like this if you ever meet me. Yup.
+
+P.S.2 The picture is more than 10 years old now but it's a good picture.
+
+<script>
+(function() {
+	const hour = new Date().getHours();
+	let greeting;
+	
+	if (hour < 12) {
+		greeting = 'Good morning';
+	} else if (hour < 18) {
+		greeting = 'Good afternoon';
+	} else {
+		greeting = 'Good evening';
+	}
+	
+	const greetingElement = document.getElementById('greeting');
+	if (greetingElement) {
+		greetingElement.textContent = greeting;
+	}
+})();
+</script>

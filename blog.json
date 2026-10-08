@@ -1,0 +1,12 @@
+{
+  "title": "Kasparas Anusauskas",
+  "description": "For stuff I like to talk about, mostly with myself",
+  "language": "en",
+  "author": "Kasparas Anusauskas",
+  "showDescription": false,
+  "menu": [
+    { "label": "Book Reviews", "tag": "books", "path": "/books/" },
+    { "label": "TIL", "tag": "til", "path": "/til/" },
+    { "label": "About", "tag": "about", "home": false }
+  ]
+}

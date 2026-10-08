@@ -1,0 +1,78 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+// The deploy workflow ships into every blog, so its first run is the first
+// thing a new user hears from GitHub. QA 2026-08-24: that first run FAILED and
+// emailed them — the repository builds the moment it is generated, before
+// Repoet has enabled Pages, so `configure-pages` 404s. Nothing is broken (the
+// app enables Pages and re-triggers), but "your build failed" is a terrible
+// hello. The workflow must skip cleanly instead.
+
+const wf = readFileSync(new URL('../.github/workflows/deploy.yml', import.meta.url), 'utf-8');
+
+test('the build asks whether Pages is enabled before configuring it', () => {
+  assert.match(wf, /id:\s*pages/, 'needs a readiness step with an id');
+  assert.match(wf, /api\.github\.com\/repos\/\$\{\{\s*github\.repository\s*\}\}\/pages/,
+    'readiness is decided by asking the Pages API, not by guessing');
+});
+
+test('every step that needs Pages is skipped when Pages is not enabled yet', () => {
+  // Each of these fails or uploads pointlessly without a Pages site.
+  for (const step of ['configure-pages', 'upload-pages-artifact']) {
+    const idx = wf.indexOf(step);
+    assert.ok(idx > 0, `${step} present`);
+    const block = wf.slice(Math.max(0, idx - 260), idx + 120);
+    assert.match(block, /if:\s*steps\.pages\.outputs\.enabled\s*==\s*'true'/,
+      `${step} must be conditional on the readiness check`);
+  }
+});
+
+test('the deploy job does not run when the build skipped', () => {
+  assert.match(wf, /needs:\s*build[\s\S]{0,200}if:\s*needs\.build\.outputs\.enabled\s*==\s*'true'/,
+    'deploy must depend on the build reporting that Pages is enabled');
+});
+
+test('a skipped first run still succeeds, and says why in plain words', () => {
+  assert.match(wf, /Pages is not enabled yet/i,
+    'the log should explain the skip to whoever opens it');
+  assert.doesNotMatch(wf, /exit 1/, 'skipping is not a failure');
+});
+
+test('actions are current, so blogs do not inherit deprecation warnings', () => {
+  for (const [action, min] of [['checkout', 5], ['configure-pages', 6], ['upload-pages-artifact', 5], ['deploy-pages', 5]]) {
+    const m = new RegExp(`actions/${action}@v(\\d+)`).exec(wf);
+    assert.ok(m, `${action} pinned`);
+    assert.ok(Number(m[1]) >= min, `actions/${action} should be v${min}+, found v${m[1]}`);
+  }
+});
+
+// A repository's default branch is not always `main`: an empty repository gets
+// its owner's GitHub setting, often `master`. A workflow that names `main`
+// never deploys such a blog. The push event carries the repository's default
+// branch, so the workflow reads it instead of naming one.
+
+test('the blog deploys from the default branch, whatever it is called', () => {
+  assert.doesNotMatch(wf, /branches:\s*\[\s*main\s*\]/, 'no branch name may be written into the trigger');
+  assert.match(wf,
+    /build:[\s\S]{0,400}if:\s*github\.ref\s*==\s*format\('refs\/heads\/\{0\}',\s*github\.event\.repository\.default_branch\)/,
+    'the build job runs only for a push to the default branch, read from the push itself');
+});
+
+test('a push to another branch never cancels the blog build', () => {
+  // Concurrency is decided before any job's `if`, so one shared group would
+  // let a skipped push to a side branch cancel a real deploy in progress.
+  assert.match(wf, /concurrency:\s*\n\s*group:\s*pages-\$\{\{\s*github\.ref\s*\}\}/,
+    'each branch has its own concurrency group');
+});
+
+// A Pages site built with GitHub Actions is not rebuilt when its address
+// changes. A custom domain on a project blog moves it from /blog/ to /, and
+// every link built for /blog/ breaks until the next push (journey fixes row
+// 43). The owner can run the workflow by hand instead of publishing something.
+
+test('the deploy can be run by hand, still only from the default branch', () => {
+  assert.match(wf, /^on:\s*\n(?:\s+.*\n)*?\s+workflow_dispatch:/m, 'Run workflow is offered');
+  assert.match(wf, /build:[\s\S]{0,400}if:\s*github\.ref\s*==\s*format\('refs\/heads\/\{0\}'/,
+    'a run on another branch still builds nothing');
+});

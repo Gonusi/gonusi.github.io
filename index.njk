@@ -1,0 +1,37 @@
+---
+layout: layout.njk
+pagination:
+  data: collections.posts
+  size: 50
+  alias: pagePosts
+  generatePageOnEmptyData: true
+permalink: "{% if pagination.pageNumber == 0 %}/{% else %}/page/{{ pagination.pageNumber + 1 }}/{% endif %}"
+---
+{%- if collections.posts | length == 0 %}
+<p class="empty">No posts yet.</p>
+{%- endif %}
+<ul class="posts">
+  {%- for post in pagePosts %}
+  <li>
+    <a href="{{ post.url | url }}">
+      {% if post.data.title %}<strong>{{ post.data.title }}</strong>{% else %}{{ post.content | striptags | truncate(120) }}{% endif %}
+    </a>
+    <div class="meta">{{ post.data.date | readableDate }}</div>
+  </li>
+  {%- endfor %}
+</ul>
+{%- if pagination.href.previous or pagination.href.next %}
+<nav class="pages">
+  {%- if pagination.href.previous %}<a href="{{ pagination.href.previous | url }}">‹ Newer</a>{% endif %}
+  {%- if pagination.href.next %}<a href="{{ pagination.href.next | url }}">Older ›</a>{% endif %}
+</nav>
+{%- endif %}
+{# The site itself, for search: one WebSite, one Person. #}
+<script type="application/ld+json">{{ {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: blog.title,
+  description: blog.description,
+  url: site.url + '/' if site.url else '/',
+  author: { '@type': 'Person', name: blog.author or blog.title }
+} | jsonld | safe }}</script>
